@@ -6,8 +6,9 @@ you download and re-upload a file.
 
 ## How it works
 
-`src/app.tsx` is the whole app. It calls the public API for the surah list,
-builds an image URL from the pickers, and on **Add to design**:
+`src/intents/design_editor/app.tsx` is the whole app. It calls the public API
+for the surah list, builds an image URL from the pickers, and on
+**Add to design**:
 
 1. `upload()` from `@canva/asset` hands Canva the PNG URL, so Canva fetches the
    image server-side into the user's media library;
@@ -21,20 +22,34 @@ API (`cloudflared tunnel`, `ngrok`) rather than at `http://localhost:8787`.
 
 ## Building it
 
-Canva apps build inside Canva's starter kit, which supplies the webpack config,
-the dev server and the HMR bridge:
+Canva apps build inside Canva's starter kit, which supplies the bundler, the dev
+server and the intent wiring. It needs Node 22 or 24 — Node 20 will not install
+it.
 
 ```bash
 git clone https://github.com/canva-sdks/canva-apps-sdk-starter-kit
 cd canva-apps-sdk-starter-kit
 npm install
 cp -r ../quran-png/apps/quran-canva/src/* src/
-npm start
+rm -rf src/intents/design_editor/__tests__   # tests for the kit's demo app
+npm start                # dev server on localhost:8080
+npm run build            # dist/app.js + dist/messages_en.json
 ```
 
-Then in the Canva Developer Portal (canva.com/developers): create an app, set
-its **Development URL** to `http://localhost:8080`, and open it from the
-editor's Apps panel.
+Delete that test directory or `npm run lint:types` fails: it asserts on a
+`DOCS_URL` export belonging to the demo app you just replaced. The bundler
+ignores tests, so the build passes either way.
+
+`src/intents/design_editor/index.tsx` in the kit already mounts `App` from
+`./app`, so the copy is the whole integration — there is nothing to register.
+
+The build warns that `BACKEND_HOST` is set to localhost. Ignore it: this app
+holds its host in `API_HOST` and never reads that variable. Confirm by grepping
+the bundle for `png.quran.ws`.
+
+For development, create an app in the Canva Developer Portal
+(canva.com/developers), set its **Development URL** to `http://localhost:8080`,
+and open it from the editor's Apps panel.
 
 ## The translations file
 
@@ -43,11 +58,10 @@ not hand-written: every user-facing string in `app.tsx` goes through
 `intl.formatMessage({ defaultMessage, description })`, and `formatjs` extracts
 them.
 
-```bash
-npm run extract          # writes dist/messages_en.json
-```
+`npm run build` in the starter kit extracts them to `dist/messages_en.json`;
+the copy committed here is that output.
 
-Upload that file under **Translations**. Re-run it and re-upload whenever you
+Upload that file under **Translations**. Rebuild and re-upload whenever you
 change a string. Canva requires a non-empty `description` on every message —
 that is the note telling a translator where the string appears, so keep them
 meaningful rather than restating the string.
