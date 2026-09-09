@@ -55,8 +55,8 @@ const HEAD = ({ title, description, canonical }) => `<!doctype html>
 
 const FOOT = `<footer>
   <div class="wrap">
-    <span>quran.ws · free tools for Quranic text</span>
-    <span><a href="/">Generator</a> · <a href="/surah/">All 114 surahs</a> · <a href="/about/">Licence</a></span>
+    <span>quran.ws · Open Quran tools and data</span>
+    <span><a href="/">Generator</a> · <a href="/surah/">All 114 surahs</a> · <a href="/about/">Source &amp; license</a></span>
   </div>
 </footer>
 </body>
@@ -84,11 +84,11 @@ function surahPage(s, prev, next) {
   const canonical = ORIGIN + path
   const range = `1-${s.ayahs}`
   const preview = `/api/v1/image/${s.number}/1${s.ayahs > 1 ? '-' + Math.min(s.ayahs, 3) : ''}.png?width=1200`
-  const title = `Surah ${s.name_latin} for Canva — Transparent PNG of the Madani Mushaf`
+  const title = `Surah ${s.name_latin} — Transparent PNG, SVG and PDF for Design`
   const description =
-    `Download any ayah of Surah ${s.name_latin} (${s.name_ar}) as a transparent PNG, SVG or print-ready PDF ` +
-    `of the King Fahd Complex Madani mushaf. ${s.ayahs} ayahs, ${s.place === 'makkah' ? 'Makkan' : 'Madinan'}, ` +
-    `printed pages ${s.pages[0]}–${s.pages[1]}. Free, no watermark.`
+    `Export any ayah of Surah ${s.name_latin} (${s.name_ar}) as a transparent PNG, vector SVG or ` +
+    `print-ready PDF of the Madinah Mushaf — ready for Canva, Figma and print. ${s.ayahs} ayahs, ` +
+    `${s.place === 'makkah' ? 'Makkan' : 'Madinan'}, pages ${s.pages[0]}–${s.pages[1]}. Free, no watermark.`
 
   const links = highlights(s)
     .map(
@@ -117,14 +117,14 @@ ${JSON.stringify(
   <section class="prose" style="max-width:820px">
     <p class="eyebrow">Surah ${s.number} of 114</p>
     <h1 class="display" style="font-size:clamp(28px,4vw,42px);line-height:1.12;letter-spacing:-0.02em;margin:14px 0 0">
-      Surah ${esc(s.name_latin)} for Canva
+      Surah ${esc(s.name_latin)}, ready for your design
     </h1>
     <p style="margin:10px 0 0;font-family:var(--arabic);font-size:26px;color:var(--ink-2)">${esc(s.name_ar)}</p>
 
     <p style="margin-top:24px">
-      Every ayah of <strong style="font-weight:500">${esc(s.name_latin)}</strong> — “${esc(s.name_en)}” — as a
-      transparent image cut from the King Fahd Complex's printed Madani mushaf. Pick a range, choose a
-      shape, and download a PNG, an SVG or a print-ready PDF.
+      Any ayah or range from <strong style="font-weight:500">${esc(s.name_latin)}</strong> —
+      “${esc(s.name_en)}” — as vector artwork from the Madinah Mushaf. Adjust the layout, size and
+      colors, then export a transparent PNG, a fully vector SVG, or a print-ready PDF.
     </p>
 
     <div style="margin:32px 0;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden">
@@ -179,7 +179,7 @@ function indexPage(surahs) {
   return `${HEAD({
     title: 'All 114 Surahs as Transparent PNG, SVG and PDF | png.quran.ws',
     description:
-      'Every surah of the Quran as print-quality transparent images from the King Fahd Complex Madani mushaf, ready for Canva, Figma and print.',
+      'Every surah of the Quran as transparent PNG, vector SVG and print-ready PDF from the Madinah Mushaf, ready for Canva, Figma and print.',
     canonical: `${ORIGIN}/surah/`,
   })}
 <main>
@@ -188,7 +188,7 @@ function indexPage(surahs) {
     <h1 class="display" style="font-size:clamp(28px,4vw,42px);line-height:1.12;letter-spacing:-0.02em;margin:14px 0 0">All 114 surahs</h1>
     <p style="margin-top:18px">
       Each one links to a page with a live preview and the ranges people ask for most. Or go straight to
-      the <a href="/">generator</a> and pick any range you like.
+      the <a href="/">generator</a> and choose any range you like.
     </p>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-top:32px">
       ${rows}

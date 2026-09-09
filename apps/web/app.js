@@ -31,6 +31,10 @@ let renderVersion = null
 
 const $ = (sel) => document.querySelector(sel)
 
+const isArabic = () => document.documentElement.lang === 'ar'
+/** Arabic-Indic digits on the Arabic page, Western everywhere else. */
+const num = (n) => (isArabic() ? Number(n).toLocaleString('ar-EG', { useGrouping: false }) : String(n))
+
 /** Sliders and colour pickers fire on every pixel of a drag; coalesce them. */
 function debounce(fn, ms = 90) {
   let t
@@ -131,9 +135,13 @@ function refresh() {
   }
   probe.src = url
 
-  $('#size-note').textContent = `${state.width} px wide`
-  $('#width-note').textContent = `${state.width} px`
-  $('#bg-note').textContent = state.background ? state.background : 'transparent'
+  $('#size-note').textContent = isArabic() ? `${num(state.width)} بكسل` : `${state.width} px wide`
+  $('#width-note').textContent = isArabic() ? `${num(state.width)} بكسل` : `${state.width} px`
+  $('#bg-note').textContent = state.background
+    ? state.background
+    : isArabic()
+      ? 'شفافة'
+      : 'transparent'
 
   for (const [format, node] of Object.entries(downloads)) {
     node.href = imageURL(format)
@@ -152,7 +160,7 @@ const downloads = {
 function buildChips(host, items, key) {
   host.replaceChildren(
     ...items.map(([value, en, ar]) => {
-      const b = el('button', { type: 'button', textContent: document.documentElement.lang === 'ar' ? ar : en })
+      const b = el('button', { type: 'button', textContent: isArabic() ? ar : en })
       b.dataset.value = value
       b.onclick = () => {
         state[key] = value
@@ -201,10 +209,9 @@ function syncControls() {
   if (surah) {
     $('#from').max = surah.ayahs
     $('#to').max = surah.ayahs
-    $('#reading').textContent =
-      document.documentElement.lang === 'ar'
-        ? `${surah.name_ar} · ${surah.ayahs} آية`
-        : `${surah.name_latin} · ${surah.ayahs} ayahs`
+    $('#reading').textContent = isArabic()
+      ? `${surah.name_ar} · ${num(surah.ayahs)} آية`
+      : `${surah.name_latin} · ${surah.ayahs} ayahs`
   }
 }
 
@@ -252,12 +259,12 @@ function wire() {
   // the readout tracks the thumb immediately; only the render waits
   $('#padding').oninput = (e) => {
     state.padding = Number(e.target.value)
-    $('#padding-note').textContent = state.padding
+    $('#padding-note').textContent = num(state.padding)
     settle()
   }
   $('#width').oninput = (e) => {
     state.width = Number(e.target.value)
-    $('#width-note').textContent = `${state.width} px`
+    $('#width-note').textContent = isArabic() ? `${num(state.width)} بكسل` : `${state.width} px`
     settle()
   }
 
@@ -288,14 +295,14 @@ async function main() {
 
   buildChips($('#layouts'), [
     ['mushaf', 'Mushaf lines', 'سطور المصحف'],
-    ['fit', 'Fit to width', 'ملء العرض'],
+    ['fit', 'Fit to width', 'ملء المساحة'],
   ], 'layout')
   buildChips($('#aspects'), ASPECTS, 'aspect')
   buildSwatches()
   wire()
 
   $('#padding').value = String(state.padding)
-  $('#padding-note').textContent = state.padding
+  $('#padding-note').textContent = num(state.padding)
   $('#width').value = String(state.width)
   $('#copy').dataset.label = $('#copy').textContent
 

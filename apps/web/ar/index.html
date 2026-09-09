@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>نصّ القرآن للتصميم — صور شفافة عالية الدقة من مصحف المدينة | png.quran.ws</title>
-<meta name="description" content="اختر السورة ونطاق الآيات ونزّل صورة PNG شفافة أو ملف SVG أو PDF جاهزًا للطباعة من مصحف المدينة، لاستخدامها في كانفا وبرامج التصميم. مجانًا بلا حساب وبلا علامة مائية.">
+<title>آيات قرآنية جاهزة لتصميمك — PNG شفافة وSVG وPDF | png.quran.ws</title>
+<meta name="description" content="اختر السورة والآيات، واضبط المقاس والألوان، ثم نزّلها جاهزة للاستخدام: PNG بخلفية شفافة، أو SVG متجّه، أو PDF للطباعة. مجانًا، دون تسجيل، ودون علامة مائية.">
 <link rel="canonical" href="https://png.quran.ws/ar/">
 <link rel="alternate" hreflang="en" href="https://png.quran.ws/">
 <link rel="alternate" hreflang="ar" href="https://png.quran.ws/ar/">
@@ -13,8 +13,8 @@
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_SA">
-<meta property="og:title" content="نصّ القرآن للتصميم — صور شفافة من مصحف المدينة">
-<meta property="og:description" content="اختر السورة ونطاق الآيات ونزّل صورة شفافة عالية الدقة من المصحف المطبوع.">
+<meta property="og:title" content="آيات قرآنية جاهزة لتصميمك">
+<meta property="og:description" content="اختر السورة والآيات، واضبط المقاس والألوان، ثم نزّلها جاهزة للاستخدام.">
 <meta property="og:url" content="https://png.quran.ws/ar/">
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -42,12 +42,11 @@
 <main>
   <div class="hero">
     <p class="eyebrow">png.quran.ws</p>
-    <h1>نصّ المصحف جاهزًا للتصميم</h1>
-    <p class="sub">خطّ المصحف المطبوع نفسه — لا خطّ حاسوبي ولا لقطة شاشة</p>
+    <h1>آيات قرآنية جاهزة لتصميمك</h1>
+    <p class="sub">اختر السورة والآيات، واضبط المقاس والألوان، ثم نزّلها جاهزة للاستخدام.</p>
     <p class="lede">
-      اختر السورة ونطاق الآيات، ثم نزّل صورة PNG شفافة أو ملف SVG متجهًا أو PDF جاهزًا للطباعة
-      من مصحف المدينة الصادر عن مجمع الملك فهد — الرسم المطبوع نفسه، بأي مقاس.
-      مجانًا، بلا حساب، وبلا علامة مائية.
+      <strong style="font-weight:500;color:var(--ink)">PNG بخلفية شفافة · SVG متجّه · PDF للطباعة</strong><br>
+      مجانًا · دون تسجيل · دون علامة مائية
     </p>
   </div>
 
@@ -63,25 +62,25 @@
           <input class="field" id="from" type="number" min="1" value="255" inputmode="numeric">
         </div>
         <div class="num">
-          <label class="label" for="to">إلى</label>
+          <label class="label" for="to">إلى الآية</label>
           <input class="field" id="to" type="number" min="1" value="255" inputmode="numeric">
         </div>
         <p class="status">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c4956a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-          <span id="reading">جارٍ تحميل فهرس المصحف…</span>
+          <span id="reading">جارٍ التحميل…</span>
         </p>
       </div>
 
       <div class="stage">
         <div class="canvas" id="canvas" data-busy="0">
-          <img id="preview" alt="الآيات المختارة كما هي في مصحف المدينة" hidden>
+          <img id="preview" alt="الآيات المختارة" hidden>
           <p class="err" id="problem" hidden></p>
           <p class="meta"><span id="size-note"></span><span id="bg-note"></span></p>
         </div>
 
         <div class="panel">
           <div data-key="layout">
-            <p class="label">التنسيق</p>
+            <p class="label">طريقة العرض</p>
             <div class="seg" id="layouts"></div>
           </div>
 
@@ -91,7 +90,7 @@
           </div>
 
           <div data-key="color">
-            <p class="label">لون الحبر</p>
+            <p class="label">لون النص</p>
             <div class="swatches" id="inks"></div>
           </div>
 
@@ -110,7 +109,7 @@
           </div>
 
           <div class="slider">
-            <p class="label head"><span>المقاس</span><span id="width-note">2000 px</span></p>
+            <p class="label head"><span>العرض</span><span id="width-note">2000 px</span></p>
             <input type="range" id="width" min="600" max="8000" step="200">
           </div>
 
@@ -130,54 +129,64 @@
     </div>
 
     <p class="provenance">
-      <span>الرسم من مجمع الملك فهد لطباعة المصحف الشريف — مصحف المدينة، الإصدار الرابع ١٤٤١هـ، برواية حفص عن عاصم، بموجب إذن المجمع للاستخدام الرقمي المجاني.</span>
-      <span>٦٠٤ صفحات · ٦٢٣٦ آية · ٧٧٤٣٢ كلمة</span>
+      <span>مصحف المدينة النبوية، الإصدار الرابع ١٤٤١هـ، برواية حفص عن عاصم — مجمع الملك فهد لطباعة المصحف الشريف، وفق إذن المجمع للاستخدام الرقمي المجاني.</span>
+      <span>٧٧٤٣٢ كلمة · ٤٣٦٣٩٨ علامة ضبط</span>
     </p>
   </div>
 
   <section class="prose">
-    <h2>كيف تضع آية قرآنية في تصميم كانفا</h2>
+    <h2>صمّم الآية كما تحتاجها</h2>
     <p>
-      لا يعرض كانفا نصّ المصحف عرضًا صحيحًا: لصق الرسم العثماني في مربّع نصّ يكسر الضبط والحركات،
-      ومعظم ما يسمّى «خطوط قرآنية» ليس رسم المصحف. الطريق الموثوق أن تضع الآية صورةً.
+      اختر الآيات، ثم حدّد طريقة عرضها ولونها ومقاسها. ستظهر النتيجة مباشرة في المعاينة،
+      ويمكنك تنزيلها بالصيغة الأنسب لتصميمك.
     </p>
 
-    <h3>١. اختر الآيات</h3>
-    <p>حدّد السورة ونطاق الآيات أعلاه. ما تراه في المعاينة هو الرسم نفسه وبنسبه الحقيقية.</p>
-
-    <h3>٢. اختر التنسيق</h3>
+    <h3>اختر طريقة العرض</h3>
     <p>
-      <strong>سطور المصحف</strong> يبقي مواضع نهايات الأسطر كما هي في الصفحة المطبوعة، وهو الأقرب
-      إلى الأصل. <strong>ملء العرض</strong> يعيد رصف الكلمات نفسها في مربّع أو منشور ٤:٥ أو قصّة ٩:١٦
-      أو شريط، وهو أنسب لتصاميم التواصل الاجتماعي. ولا يمدّ أيٌّ منهما حرفًا ولا يشوّهه.
+      <strong>سطور المصحف</strong> — يحافظ على توزيع الكلمات ونهايات الأسطر كما في المصحف.
     </p>
-
-    <h3>٣. نزّل الملف وارفعه</h3>
     <p>
-      نزّل ملف PNG واسحبه إلى قسم «الرفع» في كانفا. الصورة شفافة فتستقرّ على أي خلفية.
-      وفي كانفا برو ارفع ملف SVG بدلًا منه؛ فهو يبقى حادًّا في أي مقاس ويمكنك تغيير لونه داخل كانفا.
-      وللطباعة استعمل ملف PDF.
+      <strong>ملء المساحة</strong> — يرتّب الكلمات لتناسب أبعاد تصميمك، سواء كان مربعًا،
+      أو منشورًا ٤:٥، أو قصة ٩:١٦، أو مساحة أفقية.
     </p>
+    <p>في الحالتين يتغير ترتيب الكلمات على الأسطر فقط، ويبقى رسم كل كلمة كما هو.</p>
 
-    <h3>أو اختصر الطريق</h3>
+    <h3>اختر الصيغة</h3>
+    <p><strong>PNG</strong> — بخلفية شفافة، جاهزة لإضافتها إلى أي تصميم.</p>
+    <p><strong>SVG</strong> — رسم متجّه يبقى واضحًا مهما غيّرت مقاسه، ويمكن استخدامه في برامج التصميم.</p>
+    <p><strong>PDF</strong> — مناسب للطباعة والتصاميم المعدّة للطباعة.</p>
+
+    <h2 style="margin-top:56px">تستخدم كانفا؟</h2>
     <p>
-      <a href="/canva/">تطبيق quran-canva</a> يضع هذا المحدّد نفسه داخل محرّر كانفا،
-      فتضيف الآية إلى تصميمك دون مغادرة الصفحة.
+      نزّل الآيات بصيغة PNG أو SVG وأضفها إلى تصميمك، أو استخدم
+      <strong>تطبيق quran-canva</strong> لإضافة الآيات مباشرة من داخل كانفا.
     </p>
+    <p><a href="/canva/">افتح تطبيق كانفا ←</a></p>
 
-    <h2 style="margin-top:56px">لماذا هذا رسم المصحف لا خطّ حاسوبي</h2>
+    <h2 style="margin-top:56px">لماذا لا نستخدم خطًا حاسوبيًا؟</h2>
+    <p>لأننا لا نعيد كتابة الآيات بخط يحاول محاكاة رسم المصحف.</p>
     <p>
-      كل كلمة هنا رسم متجهي مأخوذ من ألواح مصحف المدينة الصادر عن مجمع الملك فهد —
-      ٧٧٤٣٢ كلمة و٤٣٦٣٩٨ علامة ضبط، كلٌّ منها شكل مستقلّ. لا يُركَّب النصّ عند الطلب،
-      فلا خطّ يغيب، ولا محرّك تشكيل يخطئ في الوصل، ولا فرق بين ما تراه وما يطبعه المصحف.
+      كل كلمة وعلامة ضبط محفوظة كرسم متجّه مستقل، ونستخدم هذا الرسم مباشرة عند إنشاء ملفات
+      PNG وSVG وPDF.
+    </p>
+    <p>
+      وهذا يعني أن شكل الكلمات لا يعتمد على الخطوط المثبتة على جهازك، ولا على طريقة البرنامج
+      في تشكيل النص وعرضه.
+    </p>
+    <p style="color:var(--ink);font-weight:500">٧٧٤٣٢ كلمة · ٤٣٦٣٩٨ علامة ضبط</p>
+
+    <h3 style="margin-top:48px">المصدر والرخصة</h3>
+    <p>
+      الرسم مأخوذ من مصحف المدينة النبوية، الإصدار الرابع ١٤٤١هـ، برواية حفص عن عاصم،
+      الصادر عن مجمع الملك فهد لطباعة المصحف الشريف، وفق إذن المجمع للاستخدام الرقمي المجاني.
     </p>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>quran.ws · أدوات مجانية للنصّ القرآني</span>
-    <span><a href="/api/">واجهة API</a> · <a href="/about/">الرخصة والمصدر</a></span>
+    <span>quran.ws · أدوات وبيانات قرآنية مفتوحة</span>
+    <span><a href="/api/">واجهة API</a> · <a href="/about/">المصدر والرخصة</a></span>
   </div>
 </footer>
 

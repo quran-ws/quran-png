@@ -4,16 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Quran Text for Canva — Free Transparent PNG of the Madani Mushaf</title>
-<meta name="description" content="Put real Quran text in Canva. Pick a surah and ayah range, download a transparent PNG, SVG or print-ready PDF of the King Fahd Complex Madani mushaf. Free, no account, no watermark.">
+<title>Quran Verses for Canva &amp; Design — Transparent PNG, SVG, PDF</title>
+<meta name="description" content="Choose any ayah or range of ayahs and export a transparent PNG, vector SVG or print-ready PDF of the Madinah Mushaf — ready for Canva, Figma and print. Free, no account, no watermark.">
 <link rel="canonical" href="https://png.quran.ws/">
 <link rel="alternate" hreflang="en" href="https://png.quran.ws/">
 <link rel="alternate" hreflang="ar" href="https://png.quran.ws/ar/">
 <link rel="alternate" hreflang="x-default" href="https://png.quran.ws/">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Quran Text for Canva — Free Transparent PNG of the Madani Mushaf">
-<meta property="og:description" content="Pick a surah and ayah range, download a transparent PNG, SVG or print-ready PDF of the real printed mushaf.">
+<meta property="og:title" content="Quran Verses for Canva &amp; Design — Transparent PNG, SVG, PDF">
+<meta property="og:description" content="Choose any ayah or range of ayahs. Adjust the layout, size and colors, then export exactly what you need.">
 <meta property="og:url" content="https://png.quran.ws/">
 <meta property="og:image" content="https://png.quran.ws/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -32,7 +32,7 @@
   "applicationCategory": "DesignApplication",
   "operatingSystem": "Any",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "description": "Generate transparent PNG, SVG and PDF images of Quran ayahs from the King Fahd Complex Madani mushaf, for use in Canva and other design tools.",
+  "description": "Export any Quran ayah or range as a transparent PNG, vector SVG or print-ready PDF of the Madinah Mushaf, for use in Canva and other design tools.",
   "isPartOf": { "@type": "WebSite", "name": "quran.ws", "url": "https://quran.ws" }
 }
 </script>
@@ -59,12 +59,11 @@
 <main>
   <div class="hero">
     <p class="eyebrow">png.quran.ws</p>
-    <h1 class="display">Quran text you can drop straight into Canva</h1>
-    <p class="sub">Real mushaf calligraphy — not a font, not a screenshot</p>
+    <h1 class="display">Quran verses, ready for your design</h1>
+    <p class="sub">Choose any ayah or range of ayahs. Adjust the layout, size, and colors, then export exactly what you need.</p>
     <p class="lede">
-      Choose a surah and an ayah range. Get a transparent PNG, a vector SVG, or a print-ready PDF
-      of the King Fahd Complex Madani mushaf — the exact printed artwork, at any size.
-      Free, no account, no watermark.
+      <strong style="font-weight:500;color:var(--ink)">Transparent PNG · Vector SVG · Print-ready PDF</strong><br>
+      Free · No account · No watermark
     </p>
   </div>
 
@@ -81,18 +80,18 @@
           <input class="field" id="from" type="number" min="1" value="255" inputmode="numeric">
         </div>
         <div class="num">
-          <label class="label" for="to">To</label>
+          <label class="label" for="to">To ayah</label>
           <input class="field" id="to" type="number" min="1" value="255" inputmode="numeric">
         </div>
         <p class="status">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c4956a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-          <span id="reading">Loading the mushaf index…</span>
+          <span id="reading">Loading…</span>
         </p>
       </div>
 
       <div class="stage">
         <div class="canvas" id="canvas" data-busy="0">
-          <img id="preview" alt="The selected ayahs, as printed in the Madani mushaf" hidden>
+          <img id="preview" alt="Selected ayahs" hidden>
           <p class="err" id="problem" hidden></p>
           <p class="meta">
             <span id="size-note"></span>
@@ -112,7 +111,7 @@
           </div>
 
           <div data-key="color">
-            <p class="label">Ink</p>
+            <p class="label">Text color</p>
             <div class="swatches" id="inks"></div>
           </div>
 
@@ -120,8 +119,8 @@
             <p class="label">Background</p>
             <div class="split">
               <button type="button" id="bg-transparent">Transparent</button>
-              <button type="button" id="bg-solid">Solid colour</button>
-              <input type="color" id="bg-colour" value="#ffffff" aria-label="Background colour" style="width:44px;border:1px solid var(--line);border-radius:var(--radius);background:none;padding:2px;">
+              <button type="button" id="bg-solid">Solid color</button>
+              <input type="color" id="bg-colour" value="#ffffff" aria-label="Background color" style="width:44px;border:1px solid var(--line);border-radius:var(--radius);background:none;padding:2px;">
             </div>
           </div>
 
@@ -131,7 +130,7 @@
           </div>
 
           <div class="slider">
-            <p class="label head"><span>Size</span><span id="width-note">2000 px</span></p>
+            <p class="label head"><span>Width</span><span id="width-note">2000 px</span></p>
             <input type="range" id="width" min="600" max="8000" step="200">
           </div>
 
@@ -151,59 +150,64 @@
     </div>
 
     <p class="provenance">
-      <span>Artwork: King Fahd Glorious Qur'an Printing Complex, Madani mushaf V4 (1441H), Ḥafṣ ʿan ʿĀṣim — used under the Complex's free digital licence.</span>
-      <span>604 pages · 6,236 ayahs · 77,432 words</span>
+      <span>Madinah Mushaf, 4th edition (1441 AH), Ḥafṣ ʿan ʿĀṣim — King Fahd Glorious Qur'an Printing Complex, used under its permission for free digital use.</span>
+      <span>77,432 words · 436,398 diacritic marks</span>
     </p>
   </div>
 
   <section class="prose">
-    <h2 class="display">How to put Quran text in a Canva design</h2>
+    <h2 class="display">Made to fit your design</h2>
+    <p>Pick your ayahs and customize the output for wherever you plan to use them.</p>
     <p>
-      Canva has no Arabic Quran text that renders correctly — pasting Uthmani script into a text box
-      breaks the diacritics, and most "Quran fonts" are not the mushaf. The reliable way is to place
-      the verse as an image.
+      Choose <strong style="font-weight:500">Mushaf lines</strong> to preserve the original line
+      breaks, or <strong style="font-weight:500">Fit to width</strong> to arrange the same words for
+      the space available in your design.
+    </p>
+    <p>
+      Square post, 4:5 portrait, 9:16 story, banner, slide, or print — the layout can change without
+      altering the shape of the words.
     </p>
 
-    <h3>1. Pick the ayahs</h3>
-    <p>Choose the surah and the range above. The preview is the real artwork, at the real proportions.</p>
+    <h3>Pick the right format</h3>
+    <p><strong style="font-weight:500">PNG</strong> — Transparent and ready to drop onto any background.</p>
+    <p><strong style="font-weight:500">SVG</strong> — Fully vector, so it stays sharp at any size.</p>
+    <p><strong style="font-weight:500">PDF</strong> — High-quality output for print and publishing.</p>
 
-    <h3>2. Choose a layout</h3>
+    <h2 class="display" style="margin-top:56px">Designing in Canva?</h2>
     <p>
-      <strong>Mushaf lines</strong> keeps the line breaks exactly as they fall on the printed page —
-      the truest reproduction. <strong>Fit to width</strong> repacks the same words into a square,
-      a 4:5 post, a 9:16 story or a banner, which usually sits better in a social layout. Neither
-      option ever stretches or distorts a letter.
+      Export your ayahs as PNG or SVG and drop them into Canva, or use
+      <strong style="font-weight:500">quran-canva</strong> to add them directly from inside the
+      Canva editor.
     </p>
+    <p><a href="/canva/">Open the Canva app →</a></p>
 
-    <h3>3. Download and upload</h3>
+    <h2 class="display" style="margin-top:56px">Not a Quran-like font</h2>
+    <p>The Quran is not typeset again every time you export.</p>
     <p>
-      Download the PNG and drag it into Canva's Uploads panel. It is transparent, so it sits on any
-      background. On Canva Pro, upload the SVG instead — it stays sharp at any size and you can
-      recolour it inside Canva. For print, use the PDF.
+      Each word and diacritic is stored as vector artwork and used directly to produce the PNG, SVG,
+      or PDF.
     </p>
-
-    <h3>Or skip the upload</h3>
     <p>
-      The <a href="/canva/">quran-canva app</a> puts the same picker inside the Canva editor, so you
-      can add an ayah to your design without leaving the page.
+      No font dependency. No shaping engine rebuilding the words. The artwork you preview is the
+      artwork you export.
     </p>
+    <p style="color:var(--ink);font-weight:500">77,432 words · 436,398 diacritic marks</p>
 
-    <h2 class="display" style="margin-top:56px">Why this is the printed mushaf, not a font</h2>
+    <h3 style="margin-top:48px">Source &amp; license</h3>
     <p>
-      Every word here is vector artwork traced from the King Fahd Complex's own Madani mushaf plates —
-      77,432 words and 436,398 individual diacritical marks, each one a separate shape. Nothing is
-      typeset at request time, so there is no font to go missing, no shaping engine to get the
-      ligatures wrong, and no difference between what you see and what the mushaf prints.
+      The artwork is sourced from the Madinah Mushaf, 4th edition (1441 AH), Ḥafṣ ʿan ʿĀṣim,
+      published by the King Fahd Glorious Qur'an Printing Complex and used under its permission for
+      free digital use.
     </p>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>quran.ws · free tools for Quranic text</span>
+    <span>quran.ws · Open Quran tools and data</span>
     <span>
       <a href="/api/">API</a> ·
-      <a href="/about/">Licence &amp; provenance</a>
+      <a href="/about/">Source &amp; license</a>
     </span>
   </div>
 </footer>
