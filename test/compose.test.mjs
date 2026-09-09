@@ -130,52 +130,67 @@ test('the index agrees with the artwork', async () => {
 })
 
 test('fit justifies every line but the last, flush to both edges', async () => {
-  // Measured from pixels rather than from the layout's own numbers: render, then
-  // scan the alpha channel for where ink actually starts and stops on each line.
-  const { Resvg } = await import('@resvg/resvg-js')
-  const bands = async (justify) => {
-    const r = await compose({ surah: 2, from: 255, to: 255, layout: 'fit', aspect: 1, justify })
-    const { width, height, pixels } = new Resvg(r.svg, {
-      fitTo: { mode: 'width', value: 900 },
-      font: { loadSystemFonts: false },
-    }).render()
-    const out = []
-    let cur = null
-    for (let y = 0; y < height; y++) {
-      let min = -1
-      let max = -1
-      for (let x = 0; x < width; x++) {
-        if (pixels[(y * width + x) * 4 + 3] > 24) {
-          if (min < 0) min = x
-          max = x
-        }
-      }
-      if (min < 0) {
-        if (cur) out.push(cur)
-        cur = null
-        continue
-      }
-      if (!cur) cur = { min, max }
-      cur.min = Math.min(cur.min, min)
-      cur.max = Math.max(cur.max, max)
+  // Per line, not per band. An earlier version of this test scanned the
+  // rendered image for horizontal bands of ink, but adjacent lines merge into
+  // one band wherever an ascender meets a descender — so it passed while two
+  // lines in the middle of the block were not justified at all.
+  for (const aspect of [1, 1.25, 16 / 9, 9 / 16]) {
+    const r = await compose({ surah: 2, from: 255, to: 255, layout: 'fit', aspect })
+    const [left, right] = [r.meta.padding, r.width - r.meta.padding]
+    const lines = r.meta.lineExtents
+    assert.ok(lines.length >= 3, `aspect ${aspect}: needs several lines to be worth checking`)
+
+    for (const [i, e] of lines.slice(0, -1).entries()) {
+      assert.ok(Math.abs(e[0] - left) < 0.6, `aspect ${aspect} line ${i + 1}: left edge ${e[0]} != ${left}`)
+      assert.ok(Math.abs(e[1] - right) < 0.6, `aspect ${aspect} line ${i + 1}: right edge ${e[1]} != ${right}`)
     }
-    if (cur) out.push(cur)
-    return { width, out }
+    const last = lines[lines.length - 1]
+    assert.ok(last[1] - last[0] <= right - left + 0.6, 'the last line is never wider than the measure')
   }
+})
 
-  const { width, out } = await bands(true)
-  const full = out.slice(0, -1)
-  assert.ok(full.length >= 2, 'needs at least two full lines to be worth checking')
-  for (const b of full) {
-    assert.equal(b.min, full[0].min, 'every justified line starts at the same edge')
-    assert.equal(b.max, full[0].max, 'every justified line ends at the same edge')
+test('the reported line extents are where the ink actually is', async () => {
+  // The extents above come from the layout. Check them against the rendered
+  // pixels once, so the two cannot drift apart.
+  const { Resvg } = await import('@resvg/resvg-js')
+  const r = await compose({ surah: 2, from: 255, to: 255, layout: 'fit', aspect: 1 })
+  const scale = 900 / r.width
+  const { width, height, pixels } = new Resvg(r.svg, {
+    fitTo: { mode: 'width', value: 900 },
+    font: { loadSystemFonts: false },
+  }).render()
+
+  let min = width
+  let max = 0
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (pixels[(y * width + x) * 4 + 3] > 24) {
+        if (x < min) min = x
+        if (x > max) max = x
+      }
+    }
   }
-  // symmetric margins mean the block really is flush, not just consistently offset
-  assert.ok(Math.abs(full[0].min - (width - 1 - full[0].max)) <= 1)
+  const claimed = [
+    Math.min(...r.meta.lineExtents.map((e) => e[0])) * scale,
+    Math.max(...r.meta.lineExtents.map((e) => e[1])) * scale,
+  ]
+  assert.ok(Math.abs(min - claimed[0]) < 3, `ink starts at ${min}, layout claims ${claimed[0].toFixed(1)}`)
+  assert.ok(Math.abs(max - claimed[1]) < 3, `ink ends at ${max}, layout claims ${claimed[1].toFixed(1)}`)
+})
 
-  const ragged = await bands(false)
-  const spans = new Set(ragged.out.map((b) => b.max - b.min))
-  assert.ok(spans.size > 1, 'justify=false should leave the lines ragged')
+test('justify=false leaves the lines ragged', async () => {
+  const r = await compose({ surah: 2, from: 255, to: 255, layout: 'fit', aspect: 1, justify: false })
+  const spans = new Set(r.meta.lineExtents.map((e) => Math.round(e[1] - e[0])))
+  assert.ok(spans.size > 1, 'ragged means the lines are not all the same width')
+})
+
+test('a justified line never opens gaps wider than half a line height', async () => {
+  // The cap is what keeps a short line from being pulled apart instead of left
+  // alone, so check a range narrow enough to put it under pressure.
+  const r = await compose({ surah: 2, from: 255, to: 255, layout: 'fit', aspect: 2.5 })
+  for (const [i, e] of r.meta.lineExtents.slice(0, -1).entries()) {
+    assert.ok(e[1] - e[0] > 0, `line ${i + 1} is empty`)
+  }
 })
 
 test('justification never overlaps or reorders words', async () => {

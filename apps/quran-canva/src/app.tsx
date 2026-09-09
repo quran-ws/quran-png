@@ -37,6 +37,7 @@ export function App() {
   const intl = useIntl()
 
   const [surahs, setSurahs] = useState<Surah[]>([])
+  const [renderVersion, setRenderVersion] = useState<number | null>(null)
   const [surah, setSurah] = useState(1)
   const [from, setFrom] = useState(1)
   const [to, setTo] = useState(7)
@@ -54,7 +55,10 @@ export function App() {
   useEffect(() => {
     fetch(`${API}/surahs`)
       .then((r) => r.json())
-      .then((d) => setSurahs(d.surahs))
+      .then((d) => {
+        setSurahs(d.surahs)
+        setRenderVersion(d.render_version ?? null)
+      })
       .catch(() => setError(unreachable))
   }, [])
 
@@ -75,8 +79,9 @@ export function App() {
       params.set('aspect', aspect)
     }
     if (color !== '#231f20') params.set('color', color)
+    if (renderVersion !== null) params.set('v', String(renderVersion))
     return (width: number) => `${API}/image/${surah}/${range}.png?${params}&width=${width}`
-  }, [surah, from, to, layout, aspect, color])
+  }, [surah, from, to, layout, aspect, color, renderVersion])
 
   const aspects = [
     { value: 'square', label: intl.formatMessage({ defaultMessage: 'Square 1:1', description: 'A square image shape option.' }) },

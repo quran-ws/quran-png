@@ -56,8 +56,12 @@ stretched a letter to fill a box would no longer be the mushaf.
 
 ## The API
 
-One GET request, no key, no signup. Responses carry a permanent `ETag` and
-`immutable` caching, so hotlinking costs one render, ever.
+One GET request, no key, no signup. Renders are cached server-side and carry an
+`ETag`, so hotlinking the same ayah costs one render, ever.
+
+Plain URLs cache for five minutes and then revalidate, so a layout fix actually
+reaches you. Add `v=<render version>` (from `GET /api/v1/surahs`) to pin the
+renderer — that URL is immutable and safe to cache for a year.
 
 ```
 GET /api/v1/image/{surah}/{range}.{png|svg|pdf}
@@ -79,6 +83,7 @@ GET /api/v1/image/{surah}/{range}.{png|svg|pdf}
 | `lineSpacing` | 0.6 – 3 | `1` |
 | `wordSpacing` | 0.3 – 4 (`fit` only) | `1` |
 | `justify` | `0` to switch off (`fit` only) | on |
+| `v` | pin the renderer for permanent caching | unpinned |
 
 Also `GET /api/v1/surahs`, `/api/v1/surahs/{n}` and `/api/v1/options`.
 

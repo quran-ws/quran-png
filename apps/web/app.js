@@ -27,6 +27,7 @@ const DEFAULTS = {
 
 const state = { ...DEFAULTS }
 let surahs = []
+let renderVersion = null
 
 const $ = (sel) => document.querySelector(sel)
 
@@ -86,6 +87,9 @@ function imageURL(format, { width } = {}) {
   if (state.background) p.set('background', state.background)
   if (state.padding !== DEFAULTS.padding) p.set('padding', state.padding)
   if (format === 'png') p.set('width', width ?? state.width)
+  // pin the renderer, so a layout fix shows up here instead of being masked by
+  // a year-old copy of the previous one sitting in the browser cache
+  if (renderVersion !== null) p.set('v', renderVersion)
   const span = state.to === state.from ? state.from : `${state.from}-${state.to}`
   return `${API}/image/${state.surah}/${span}.${format}?${p}`
 }
@@ -271,6 +275,7 @@ async function main() {
 
   const data = await fetch(`${API}/surahs`).then((r) => r.json())
   surahs = data.surahs
+  renderVersion = data.render_version
 
   $('#surah').replaceChildren(
     ...surahs.map((s) =>

@@ -4,7 +4,7 @@ import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
-import { compose, ComposeError, resolveRange } from '../../packages/composer/compose.mjs'
+import { compose, ComposeError, resolveRange, RENDER_VERSION } from '../../packages/composer/compose.mjs'
 import { toPNG, toPDF } from '../../packages/composer/render.mjs'
 import { loadIndex } from '../../packages/composer/store.mjs'
 import { parseOptions, parseRange, cacheKey, ASPECTS } from './params.mjs'
@@ -63,19 +63,28 @@ async function render(options) {
   else if (options.format === 'pdf') body = await toPDF(result.svg, result)
   else body = Buffer.from(result.svg, 'utf8')
 
-  const etag = `"${createHash('sha1').update(key).update(body).digest('base64url').slice(0, 27)}"`
+  const etag = `"${createHash('sha1').update(String(RENDER_VERSION)).update(key).update(body).digest('base64url').slice(0, 27)}"`
   return store(key, { body, etag, meta: result.meta, width: result.width, height: result.height })
 }
 
 function sendImage(c, options, out) {
   const name = `${options.surah}-${options.from}${options.to === options.from ? '' : `-${options.to}`}.${options.format}`
   if (c.req.header('if-none-match') === out.etag) return c.body(null, 304)
+
+  // Only a URL that pins `v` is safe to freeze: the artwork never changes, but
+  // the way it is laid out can, and a caller holding a year-long copy would
+  // never see the correction. Unpinned URLs get a short life and revalidate.
+  const pinned = c.req.query('v') !== undefined
+  const cacheControl = pinned
+    ? 'public, max-age=31536000, immutable'
+    : 'public, max-age=300, stale-while-revalidate=604800'
+
   return c.body(out.body, 200, {
     'content-type': MIME[options.format],
     'content-length': String(out.body.length),
     etag: out.etag,
-    // the artwork for a given set of parameters never changes
-    'cache-control': 'public, max-age=31536000, immutable',
+    'cache-control': cacheControl,
+    'x-render-version': String(RENDER_VERSION),
     'content-disposition': `inline; filename="quran-${name}"`,
     'x-quran-lines': String(out.meta.lines),
     'x-quran-words': String(out.meta.words),
@@ -86,7 +95,13 @@ function sendImage(c, options, out) {
 
 app.get('/api/v1/surahs', async (c) => {
   const index = await loadIndex()
-  return c.json({ edition: index.edition, print: index.print, count: index.surahs.length, surahs: index.surahs })
+  return c.json({
+    edition: index.edition,
+    print: index.print,
+    render_version: RENDER_VERSION,
+    count: index.surahs.length,
+    surahs: index.surahs,
+  })
 })
 
 app.get('/api/v1/surahs/:n{[0-9]+}', async (c) => {
@@ -108,6 +123,7 @@ app.get('/api/v1/options', (c) =>
       align: ['center', 'right', 'left'],
       'align (note)': 'fit layout only; the mushaf layout has no alignment to choose',
       justify: 'fit layout: spread each line but the last flush to both edges (default on; justify=0 for ragged)',
+      v: `pass v=${RENDER_VERSION} to pin this renderer and get a permanently cacheable URL`,
       width: 'output pixel width for png, 64..8000',
       color: 'hex ink colour',
       background: 'hex; omit for transparent',

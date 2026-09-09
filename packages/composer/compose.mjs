@@ -13,6 +13,13 @@ import { unionBBox } from './path-bbox.mjs'
 
 const INK = '#231f20' // the fill the source artwork hard-codes on some paths
 
+/**
+ * Bumped whenever the same request would now draw something different — a
+ * layout change, a spacing change, a fix. Callers cache images for a year, so
+ * without this a correction is invisible to anyone who already has the old one.
+ */
+export const RENDER_VERSION = 2
+
 export const LAYOUTS = ['mushaf', 'fit']
 export const ALIGNMENTS = ['center', 'right', 'left']
 
@@ -127,6 +134,7 @@ function layoutMushaf(rows, { lineHeight, lineSpacing }) {
   const placed = []
   let baselineOut = rows[0].baseline
   let previous = null
+  let placedLines = 0
 
   for (const row of rows) {
     if (previous) {
@@ -134,12 +142,93 @@ function layoutMushaf(rows, { lineHeight, lineSpacing }) {
       baselineOut += printedGap * lineSpacing
     }
     const dy = baselineOut - row.baseline
-    for (const atom of row.atoms) placed.push({ ...atom, matrix: row.matrix, dx: 0, dy })
+    const line = placedLines++
+    for (const atom of row.atoms) placed.push({ ...atom, matrix: row.matrix, dx: 0, dy, line })
     previous = row
   }
 
   const width = Math.max(...rows.map((r) => r.box[2])) - Math.min(...rows.map((r) => r.box[0]))
   return { placed, width }
+}
+
+/** Fill each line as far as it goes. Used when nothing is being justified. */
+function breakGreedy(stream, { targetWidth, space }) {
+  const lines = []
+  let current = []
+  let used = 0
+  for (const atom of stream) {
+    const w = atom.box[2] - atom.box[0]
+    const advance = current.length ? space + w : w
+    if (current.length && used + advance > targetWidth) {
+      lines.push({ atoms: current })
+      current = [atom]
+      used = w
+      continue
+    }
+    current.push(atom)
+    used += advance
+  }
+  if (current.length) lines.push({ atoms: current })
+  return lines
+}
+
+/**
+ * Choose line breaks for a justified block by minimising total badness, rather
+ * than filling each line as far as it goes.
+ *
+ * Greedy breaking pushes all the slack onto whichever lines happen to fall
+ * short, so a paragraph ends up with some lines set tight and one pulled wide.
+ * Looking one line ahead cannot fix that; the whole block has to be solved at
+ * once. This is the usual dynamic program: badness is the squared deviation of
+ * a line's word gap from the printed one, the last line is free because it does
+ * not get justified, and a line needing a gap wider than `maxGap` is not a
+ * candidate at all.
+ */
+function breakLines(stream, { targetWidth, space, maxGap }) {
+  const n = stream.length
+  const widths = stream.map((a) => a.box[2] - a.box[0])
+  const upto = new Float64Array(n + 1)
+  for (let i = 0; i < n; i++) upto[i + 1] = upto[i] + widths[i]
+
+  // a mid-block line with no gaps to open cannot be justified at all; allow it
+  // only when a single word is genuinely wider than the measure
+  const ORPHAN = (maxGap - space) ** 2 * 100
+
+  const cost = new Float64Array(n + 1).fill(Infinity)
+  const from = new Int32Array(n + 1).fill(-1)
+  cost[0] = 0
+
+  for (let j = 1; j <= n; j++) {
+    for (let i = j - 1; i >= 0; i--) {
+      const count = j - i
+      const ink = upto[j] - upto[i]
+      // walking i down only makes the line longer, so this bound ends the scan
+      if (ink + (count - 1) * space > targetWidth && count > 1) break
+      if (cost[i] === Infinity) continue
+
+      let badness = 0
+      if (j < n) {
+        if (count === 1) {
+          badness = ORPHAN
+        } else {
+          const gap = (targetWidth - ink) / (count - 1)
+          if (gap > maxGap) continue
+          badness = (gap - space) ** 2
+        }
+      }
+      if (cost[i] + badness < cost[j]) {
+        cost[j] = cost[i] + badness
+        from[j] = i
+      }
+    }
+  }
+
+  // no feasible set of breaks (a very narrow measure); fall back rather than fail
+  if (cost[n] === Infinity) return breakGreedy(stream, { targetWidth, space })
+
+  const lines = []
+  for (let j = n; j > 0; j = from[j]) lines.unshift({ atoms: stream.slice(from[j], j) })
+  return lines
 }
 
 /** Repack the atoms into lines that fill a target width. */
@@ -160,52 +249,48 @@ function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpac
   gaps.sort((a, b) => a - b)
   const space = (gaps[Math.floor(gaps.length / 2)] ?? 2.5) * wordSpacing
 
-  const lines = []
-  let current = []
-  let used = 0
-  for (const atom of stream) {
-    const w = atom.box[2] - atom.box[0]
-    const advance = current.length ? space + w : w
-    if (current.length && used + advance > targetWidth) {
-      lines.push({ atoms: current, width: used })
-      current = []
-      used = 0
-      current.push(atom)
-      used = w
-      continue
-    }
-    current.push(atom)
-    used += advance
-  }
-  if (current.length) lines.push({ atoms: current, width: used })
+  // The widest a word gap may open to. This is deliberately absolute rather
+  // than a multiple of `space`: the mushaf sets words almost touching (the
+  // median gap here is under two units), so any ratio of it is meaningless,
+  // while what the eye actually judges is the gap against the size of the
+  // text. Half a line height is a wide-but-honest word space.
+  const maxGap = lineHeight * 0.5
 
-  // Justify every line but the last: the first word sits flush against the
-  // right edge, the last against the left, and the slack is shared equally by
-  // the gaps between them. The printed mushaf justifies by stretching letters
-  // (kashida); we cannot do that without distorting the artwork, so a line
-  // whose gaps would have to blow out past MAX_STRETCH is left ragged instead —
-  // a loose line reads better than a line pulled apart.
-  const MAX_STRETCH = 3
+  const lines = justify
+    ? breakLines(stream, { targetWidth, space, maxGap })
+    : breakGreedy(stream, { targetWidth, space })
 
   for (const [i, line] of lines.entries()) {
     line.gap = space
     const ink = line.atoms.reduce((sum, a) => sum + (a.box[2] - a.box[0]), 0)
     const gapCount = line.atoms.length - 1
+    line.width = ink + gapCount * space
     if (!justify || i === lines.length - 1 || gapCount < 1) continue
 
     const needed = (targetWidth - ink) / gapCount
-    if (needed >= space && needed <= space * MAX_STRETCH) {
+    if (needed >= space && needed <= maxGap) {
       line.gap = needed
       line.width = targetWidth
     }
   }
 
-  const width = Math.max(...lines.map((l) => l.width))
+  const width = Math.max(targetWidth, ...lines.map((l) => l.width))
   const step = lineHeight * lineSpacing
   const placed = []
 
   lines.forEach((line, i) => {
-    const offsetX = align === 'right' ? width - line.width : align === 'left' ? 0 : (width - line.width) / 2
+    // In a justified block only the last line is free to sit where `align`
+    // says; everything above it starts at the leading edge, whether or not it
+    // reached the full measure. A short line that got centred instead would
+    // read as a deliberate break in the paragraph.
+    const follows = !justify || i === lines.length - 1
+    const offsetX = follows
+      ? align === 'right'
+        ? width - line.width
+        : align === 'left'
+          ? 0
+          : (width - line.width) / 2
+      : width - line.width
     // RTL: fill from the right edge of this line leftwards
     let cursor = offsetX + line.width
     const targetBaseline = i * step
@@ -215,6 +300,7 @@ function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpac
         ...atom,
         dx: cursor - w - atom.box[0],
         dy: targetBaseline - atom.baseline,
+        line: i,
       })
       cursor -= w + line.gap
     }
@@ -288,6 +374,15 @@ export async function compose(options = {}) {
   const height = round(ink[3] - ink[1] + padding * 2)
   const shift = `translate(${round(padding - ink[0])} ${round(padding - ink[1])})`
 
+  // where each line actually lands, in image coordinates — the layout's own
+  // answer, so a caller (or a test) can check flushness without reading pixels
+  const extents = []
+  for (const a of result.placed) {
+    const e = (extents[a.line] ??= [Infinity, -Infinity])
+    e[0] = Math.min(e[0], a.box[0] + a.dx + padding - ink[0])
+    e[1] = Math.max(e[1], a.box[2] + a.dx + padding - ink[0])
+  }
+
   const body = result.placed.map((a) => emit(a, color)).join('')
   const bg = background ? `<rect width="100%" height="100%" fill="${background}"/>` : ''
 
@@ -315,6 +410,8 @@ export async function compose(options = {}) {
       justified: layout === 'fit' ? justify : false,
       lines: layout === 'mushaf' ? rows.length : result.lines,
       words: result.placed.filter((a) => a.kind === 'word').length,
+      padding,
+      lineExtents: extents.map((e) => [round(e[0]), round(e[1])]),
       pages: [...new Set(rows.map((r) => r.page))],
     },
   }

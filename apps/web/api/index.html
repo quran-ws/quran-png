@@ -67,8 +67,7 @@
     <h1 class="display">One URL is the whole API</h1>
     <p style="max-width:620px;color:var(--ink-2);line-height:1.75;margin-top:18px">
       Every image is a GET request you can paste into a browser, an <code class="mono">&lt;img&gt;</code> tag,
-      or a build script. No key, no signup. Responses are immutable and cached forever, so you can
-      hotlink them.
+      or a build script. No key, no signup.
     </p>
 
     <h2 id="quick">Quick start</h2>
@@ -104,6 +103,7 @@
       <div class="row"><span class="mono">lineSpacing</span><span>0.6 – 3</span><span style="color:var(--ink-3)">1</span></div>
       <div class="row"><span class="mono">wordSpacing</span><span>0.3 – 4 (fit layout)</span><span style="color:var(--ink-3)">1</span></div>
       <div class="row"><span class="mono">justify</span><span><span class="mono">0</span> to switch it off (fit layout)</span><span style="color:var(--ink-3)">on</span></div>
+      <div class="row"><span class="mono">v</span><span>pin the renderer for permanent caching</span><span style="color:var(--ink-3)">unpinned</span></div>
     </div>
     <p style="margin-top:14px;font-size:13px;color:var(--ink-2)">
       <strong style="font-weight:500">layout=mushaf</strong> reproduces the plate: every word keeps the
@@ -132,10 +132,15 @@
 
     <h2 id="limits">Limits</h2>
     <p style="color:var(--ink-2);line-height:1.8">
-      120 requests per minute per IP. Rendered images are cached and served with a permanent
+      120 requests per minute per IP. Rendered images are cached server-side and carry an
       <span class="mono">ETag</span>, so a page that hotlinks the same ayah costs one render, ever —
       a site that embeds the same few ayahs will never come close to the limit.
       If you need more than that for something real, get in touch.
+    </p>
+    <p style="color:var(--ink-2);line-height:1.8;margin-top:16px">
+      Plain URLs are cached for five minutes and then revalidated, so a fix to the layout reaches you.
+      Add <span class="mono">v=<span id="rv">2</span></span> to pin the current renderer: that URL is
+      then immutable and safe to cache for a year, and it will keep drawing exactly what it draws today.
     </p>
 
     <p style="margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)">
