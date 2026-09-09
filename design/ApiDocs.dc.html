@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; font-family: "Inter", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #57534e; text-decoration: none; }
+    a:hover { color: #c4956a; }
+    .display { font-family: "Cormorant Garamond", Georgia, Cambria, serif; font-weight: 500; }
+    .eyebrow { font-size: 11px; font-weight: 500; color: #c4956a; letter-spacing: 0.25em; text-transform: uppercase; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; min-height: 1180px; background: #faf9f6; color: #1c1917;">
+
+  <div style="border-bottom: 1px solid #1c19170d;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: baseline; gap: 8px;">
+        <span class="eyebrow">png</span>
+        <span style="font-size: 13px; color: #a8a29e;">quran.ws</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px; font-size: 13px;">
+        <a href="#" style="padding: 5px 10px; border-radius: 6px;">Generator</a>
+        <a href="#" style="padding: 5px 10px; border-radius: 6px; color: #1c1917; background: #1c19170d;">API</a>
+        <a href="#" style="padding: 5px 10px; border-radius: 6px;">Canva app</a>
+        <a href="#" style="padding: 5px 10px; border-radius: 6px;">About the mushaf</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1200px; margin: 0 auto; padding: 64px 24px 80px; display: flex; gap: 64px; align-items: flex-start;">
+
+    <!-- sidebar -->
+    <div style="width: 190px; flex-shrink: 0; position: sticky; top: 40px; display: flex; flex-direction: column; gap: 22px; font-size: 13px;">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0 0 2px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase;">Start</p>
+        <a href="#" style="color: #1c1917;">Quick start</a>
+        <a href="#">Rate limits</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0 0 2px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase;">Endpoints</p>
+        <a href="#">GET /image</a>
+        <a href="#">GET /surahs</a>
+        <a href="#">GET /options</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0 0 2px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase;">Reference</p>
+        <a href="#">Parameters</a>
+        <a href="#">Errors</a>
+        <a href="#">Licence</a>
+      </div>
+    </div>
+
+    <!-- body -->
+    <div style="flex-grow: 1; max-width: 780px;">
+      <p class="eyebrow" style="margin: 0 0 14px;">API</p>
+      <h1 class="display" style="margin: 0; font-size: 44px; line-height: 1.1; letter-spacing: -0.02em;">One URL is the whole API</h1>
+      <p style="margin: 18px 0 0; font-size: 15px; line-height: 1.75; color: #57534e; max-width: 620px; text-wrap: pretty;">
+        Every image is a GET request you can paste into a browser, an <span class="mono" style="font-size: 13px;">&lt;img&gt;</span> tag,
+        or a build script. No key, no signup. Responses are immutable and cached forever, so you can hotlink them.
+      </p>
+
+      <div style="margin: 36px 0 0; border-radius: 8px; background: #1c1917; color: #e2dfd9; padding: 22px 24px; overflow: hidden;">
+        <p class="mono" style="margin: 0; font-size: 13.5px; line-height: 2; white-space: pre; overflow-x: auto;"><span style="color: #8a8580;">$</span> curl -O <span style="color: #c4956a;">"https://png.quran.ws/api/v1/image/2/255.png?layout=fit&amp;aspect=post&amp;width=3000"</span></p>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 12px; font-size: 12px; color: #a8a29e;">
+        <span>surah 2</span><span>·</span><span>ayah 255</span><span>·</span><span>4:5 portrait</span><span>·</span><span>3000 px wide</span><span>·</span><span>transparent</span>
+      </div>
+
+      <h2 class="display" style="margin: 56px 0 0; font-size: 26px; letter-spacing: -0.01em;">Path</h2>
+      <div style="margin-top: 16px; border: 1px solid #1c19171a; border-radius: 8px; background: #ffffff; overflow: hidden;">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #1c19170d;">
+          <span style="font-size: 11px; font-weight: 500; color: #ffffff; background: #1c1917; padding: 3px 8px; border-radius: 4px;">GET</span>
+          <span class="mono" style="font-size: 13.5px;">/api/v1/image/<span style="color: #c4956a;">{surah}</span>/<span style="color: #c4956a;">{range}</span>.<span style="color: #c4956a;">{format}</span></span>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 24px; padding: 14px 20px; border-bottom: 1px solid #1c19170d;">
+            <span class="mono" style="font-size: 13px; color: #1c1917;">/2/255.png</span>
+            <span style="font-size: 13px; color: #57534e;">one ayah</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 24px; padding: 14px 20px; border-bottom: 1px solid #1c19170d;">
+            <span class="mono" style="font-size: 13px; color: #1c1917;">/18/1-10.svg</span>
+            <span style="font-size: 13px; color: #57534e;">a range, as vectors</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 24px; padding: 14px 20px;">
+            <span class="mono" style="font-size: 13px; color: #1c1917;">/112/1-.pdf</span>
+            <span style="font-size: 13px; color: #57534e;">to the end of the surah, print-ready</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="display" style="margin: 56px 0 0; font-size: 26px; letter-spacing: -0.01em;">Parameters</h2>
+      <div style="margin-top: 16px; border: 1px solid #1c19171a; border-radius: 8px; background: #ffffff; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 150px 210px minmax(0, 1fr); gap: 20px; padding: 12px 20px; background: #1c19170d; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase;">
+          <span>Name</span><span>Values</span><span>Default</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px 210px minmax(0, 1fr); gap: 20px; padding: 14px 20px; border-bottom: 1px solid #1c19170d; font-size: 13px;">
+          <span class="mono">layout</span><span style="color: #57534e;">mushaf · fit</span><span style="color: #a8a29e;">mushaf</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px 210px minmax(0, 1fr); gap: 20px; padding: 14px 20px; border-bottom: 1px solid #1c19170d; font-size: 13px;">
+          <span class="mono">aspect</span><span style="color: #57534e;">square · post · story · wide · banner · 4:5</span><span style="color: #a8a29e;">square</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px 210px minmax(0, 1fr); gap: 20px; padding: 14px 20px; border-bottom: 1px solid #1c19170d; font-size: 13px;">
+          <span class="mono">width</span><span style="color: #57534e;">64 – 8000 px</span><span style="color: #a8a29e;">2000</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px 210px minmax(0, 1fr); gap: 20px; padding: 14px 20px; border-bottom: 1px solid #1c19170d; font-size: 13px;">
+          <span class="mono">color</span><span style="color: #57534e;">any hex</span><span style="color: #a8a29e;">#231f20</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px 210px minmax(0, 1fr); gap: 20px; padding: 14px 20px; border-bottom: 1px solid #1c19170d; font-size: 13px;">
+          <span class="mono">background</span><span style="color: #57534e;">any hex</span><span style="color: #a8a29e;">transparent</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px 210px minmax(0, 1fr); gap: 20px; padding: 14px 20px; border-bottom: 1px solid #1c19170d; font-size: 13px;">
+          <span class="mono">align</span><span style="color: #57534e;">center · right · left</span><span style="color: #a8a29e;">center</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px 210px minmax(0, 1fr); gap: 20px; padding: 14px 20px; font-size: 13px;">
+          <span class="mono">padding</span><span style="color: #57534e;">0 – 400</span><span style="color: #a8a29e;">24</span>
+        </div>
+      </div>
+
+      <h2 class="display" style="margin: 56px 0 0; font-size: 26px; letter-spacing: -0.01em;">Errors say what to fix</h2>
+      <div style="margin-top: 16px; border-radius: 8px; background: #ffffff; border: 1px solid #1c19171a; padding: 20px 24px;">
+        <p class="mono" style="margin: 0; font-size: 13px; line-height: 1.9; color: #57534e; white-space: pre;">GET /api/v1/image/2/999.png   <span style="color: #a8a29e;">→ 400</span>
+{ <span style="color: #c4956a;">"error"</span>: <span style="color: #1c1917;">"surah 2 has 286 ayahs, got 999-999"</span> }</p>
+      </div>
+
+      <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #1c19171a; display: flex; justify-content: space-between; font-size: 12px; color: #a8a29e;">
+        <span>120 requests per minute per IP. Need more? The whole service is open source — run your own.</span>
+        <a href="#">github.com/quran-ws/quran-png</a>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

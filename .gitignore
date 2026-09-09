@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.data/
+.env
+.env.local
+*.log
+.DS_Store
+out/
+.maestro/
+.gstack/
+apps/web/surah/
+apps/web/sitemap.xml
+apps/web/robots.txt
+design/quran-png-tool.html

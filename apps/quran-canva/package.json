@@ -1,0 +1,21 @@
+{
+  "name": "quran-canva",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Insert an ayah of the Madani mushaf into a Canva design.",
+  "scripts": {
+    "extract": "formatjs extract \"src/**/*.{ts,tsx}\" --out-file dist/messages_en.json"
+  },
+  "dependencies": {
+    "@canva/app-i18n-kit": "^1",
+    "@canva/app-ui-kit": "^4",
+    "@canva/asset": "^2",
+    "@canva/design": "^2",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-intl": "^6"
+  },
+  "devDependencies": {
+    "@formatjs/cli": "^6"
+  }
+}

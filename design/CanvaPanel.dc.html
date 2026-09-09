@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; font-family: "Inter", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #57534e; text-decoration: none; }
+    a:hover { color: #c4956a; }
+    .checker {
+      background-color: #ffffff;
+      background-image:
+        linear-gradient(45deg, #f1efeb 25%, transparent 25%, transparent 75%, #f1efeb 75%),
+        linear-gradient(45deg, #f1efeb 25%, transparent 25%, transparent 75%, #f1efeb 75%);
+      background-size: 12px 12px;
+      background-position: 0 0, 6px 6px;
+    }
+  </style>
+</helmet>
+
+<!-- the panel as Canva renders it: 350px wide, white, flush to the editor's left rail -->
+<div style="width: 350px; height: 760px; background: #ffffff; color: #1c1917; display: flex; flex-direction: column; box-sizing: border-box; border-right: 1px solid #1c19171a; overflow: hidden;">
+
+  <div style="padding: 16px 16px 14px; border-bottom: 1px solid #1c19170d; display: flex; align-items: center; gap: 10px;">
+    <div style="width: 28px; height: 28px; border-radius: 6px; background: #1c1917; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+      <span style="font-family: 'Noto Naskh Arabic', 'Geeza Pro', serif; color: #faf9f6; font-size: 15px; line-height: 1;">ق</span>
+    </div>
+    <div>
+      <p style="margin: 0; font-size: 14px; font-weight: 600; letter-spacing: -0.01em;">Quran</p>
+      <p style="margin: 1px 0 0; font-size: 11px; color: #a8a29e;">Madani mushaf · Ḥafṣ</p>
+    </div>
+  </div>
+
+  <div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 9px; height: 40px; padding: 0 12px; border-radius: 8px; background: #1c19170d;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a8a29e" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <span style="font-size: 13px; color: #a8a29e;">Search surah or ayah…</span>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 12px; border: 1px solid #1c19171a; border-radius: 8px;">
+      <span style="display: flex; align-items: baseline; gap: 8px; font-size: 13px;">
+        <span style="color: #a8a29e; font-size: 11px; font-variant-numeric: tabular-nums;">1</span>
+        <span>Al-Fātiḥah</span>
+        <span style="font-family: 'Noto Naskh Arabic', serif; color: #57534e;">الفاتحة</span>
+      </span>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a8a29e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <div style="flex-grow: 1; display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 12px; border: 1px solid #1c19171a; border-radius: 8px;">
+        <span style="font-size: 11px; color: #a8a29e;">From</span>
+        <span style="font-size: 13px; font-variant-numeric: tabular-nums;">1</span>
+      </div>
+      <div style="flex-grow: 1; display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 12px; border: 1px solid #1c19171a; border-radius: 8px;">
+        <span style="font-size: 11px; color: #a8a29e;">To</span>
+        <span style="font-size: 13px; font-variant-numeric: tabular-nums;">7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="checker" style="margin: 4px 16px 0; border: 1px solid #1c19171a; border-radius: 8px; height: 300px; display: flex; align-items: center; justify-content: center; padding: 18px; box-sizing: border-box;">
+    <img src="preview-fatiha.png" alt="Surah Al-Fatihah" style="max-width: 100%; max-height: 100%; display: block;">
+  </div>
+
+  <div style="padding: 16px 16px 0; display: flex; flex-direction: column; gap: 14px;">
+    <div>
+      <p style="margin: 0 0 8px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.06em; text-transform: uppercase;">Layout</p>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+        <div style="height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #1c19171a; font-size: 12.5px; color: #57534e;">Mushaf lines</div>
+        <div style="height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #1c1917; font-size: 12.5px; font-weight: 500;">Fit to width</div>
+      </div>
+    </div>
+
+    <div>
+      <p style="margin: 0 0 8px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.06em; text-transform: uppercase;">Ink</p>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="width: 24px; height: 24px; border-radius: 999px; background: #231f20; box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px #1c1917;"></span>
+        <span style="width: 24px; height: 24px; border-radius: 999px; background: #57534e; box-shadow: 0 0 0 1px #1c19171a;"></span>
+        <span style="width: 24px; height: 24px; border-radius: 999px; background: #c4956a; box-shadow: 0 0 0 1px #1c19171a;"></span>
+        <span style="width: 24px; height: 24px; border-radius: 999px; background: #1e3a34; box-shadow: 0 0 0 1px #1c19171a;"></span>
+        <span style="width: 24px; height: 24px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #1c19171a;"></span>
+        <span style="width: 24px; height: 24px; border-radius: 999px; border: 1px dashed #a8a29e; display: flex; align-items: center; justify-content: center; color: #a8a29e; font-size: 13px; line-height: 1;">+</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+
+  <div style="padding: 16px; border-top: 1px solid #1c19170d; display: flex; flex-direction: column; gap: 9px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border-radius: 8px; background: #1c1917; color: #ffffff; font-size: 14px; font-weight: 500;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      Add to design
+    </div>
+    <p style="margin: 0; font-size: 10.5px; line-height: 1.6; color: #a8a29e; text-align: center;">
+      Placed as a transparent PNG at 3000 px — recolour and resize it like any Canva element.
+    </p>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Mushaf, the Licence and the Pipeline | png.quran.ws</title>
+<meta name="description" content="Where the artwork comes from: the King Fahd Complex Madani mushaf, its free digital licence, and how 604 printed pages became 77,432 individually addressable words.">
+<link rel="canonical" href="https://png.quran.ws/about/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&family=Noto+Naskh+Arabic:wght@400;500&display=swap">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/"><span class="eyebrow">png</span><span>quran.ws</span></a>
+    <nav>
+      <a href="/">Generator</a>
+      <a href="/api/">API</a>
+      <a href="/canva/">Canva app</a>
+      <a href="/about/" aria-current="page">About the mushaf</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="prose">
+    <p class="eyebrow">Provenance</p>
+    <h1 class="display" style="font-size:clamp(30px,4vw,44px);line-height:1.1;letter-spacing:-0.02em;margin:14px 0 0">
+      Where this artwork comes from
+    </h1>
+
+    <p style="margin-top:24px">
+      Every image this site produces is cut from the King Fahd Glorious Qur'an Printing Complex's
+      <strong style="font-weight:500">Muṣḥaf al-Madīnah</strong>, V4 (1441H), in the riwāyah of Ḥafṣ ʿan ʿĀṣim —
+      the edition printed in Madinah and distributed worldwide. It is the printed plate artwork, not a
+      typeface imitating it.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">The licence</h2>
+    <p>
+      The Complex publishes a complete free digital copy of the muṣḥaf — Illustrator sources, PDF,
+      high-resolution images and a TrueType font — and states its terms plainly. Based on the approval
+      of the Minister of Islamic Affairs, Daʿwah and Guidance, General Supervisor of the Complex, these
+      formats
+      <em>"can be used for free in all personal and individual businesses, in works of governmental
+      departments &amp; agencies, in the publications of both private and national institutions; it also
+      allows Qur'an printing, digital publishing, media use, and use in websites, software, and other
+      similar intermediates."</em>
+    </p>
+    <p>
+      The single reserved right is physical: printing muṣḥafs inside the Kingdom for commercial sale,
+      or importing them for that purpose, is restricted to the Complex by Royal Decree No. 136/8 (1/2/1406 AH)
+      and Royal Decree No. 9/B/46356 (28/9/1424 AH). Nothing on this site touches that — every use here is
+      digital. Source: <a href="https://qurancomplex.gov.sa">qurancomplex.gov.sa</a>.
+    </p>
+    <p>
+      The decomposition, the labels and the indexes that make an individual ayah addressable are this
+      project's own work, released CC BY 4.0 with attribution waived for use inside a product. In short:
+      make what you want with these images.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">How a printed page becomes an ayah</h2>
+    <p>
+      The 604 pages were decomposed so that every word is its own group and every diacritical mark its
+      own shape — 77,432 words and 436,398 marks, each carrying a stable key of the form
+      <code>surah:ayah:word</code>. Asking for an ayah means collecting exactly those shapes and placing
+      them on a new canvas.
+    </p>
+    <p>
+      Because the shapes are only ever moved, never scaled or restyled, the result is the same ink the
+      Complex prints. That is also why there are two layouts and no more: keeping the printed line breaks,
+      or repacking the same words at the same size into a different shape. Anything that stretched a
+      letter to fill a box would no longer be the muṣḥaf.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">Adab</h2>
+    <p>
+      These are images of the Qur'an. They carry no translation and no commentary, and the text is never
+      altered, abbreviated or partially rendered — a range is either drawn in full or refused. If you are
+      placing an ayah in a design, please give it the room and the care it is due.
+    </p>
+
+    <p style="margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)">
+      Pipeline and vector sources:
+      <a href="https://github.com/quran-ws/quran-png">quran-ws/quran-png</a>.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>quran.ws · free tools for Quranic text</span>
+    <span><a href="/">Generator</a> · <a href="/api/">API</a></span>
+  </div>
+</footer>
+</body>
+</html>

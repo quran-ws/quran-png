@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quran Image API — Free Ayah PNG, SVG and PDF Endpoints | png.quran.ws</title>
+<meta name="description" content="A free HTTP API that returns any Quran ayah range as a transparent PNG, an SVG or a print-ready PDF of the Madani mushaf. No key, no signup, one GET request.">
+<link rel="canonical" href="https://png.quran.ws/api/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="/app.css">
+<style>
+  .docs { display: flex; gap: 64px; align-items: flex-start; padding: 64px 24px 80px; }
+  .docs aside { width: 190px; flex-shrink: 0; position: sticky; top: 40px; display: flex; flex-direction: column; gap: 22px; font-size: 13px; }
+  .docs aside div { display: flex; flex-direction: column; gap: 8px; }
+  .docs aside p { margin: 0 0 2px; }
+  .docs .body { flex-grow: 1; max-width: 780px; min-width: 0; }
+  .docs h1 { font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.02em; margin: 14px 0 0; }
+  .docs h2 { font-family: var(--display); font-weight: 500; font-size: 26px; letter-spacing: -0.01em; margin: 56px 0 16px; }
+  .shell { border-radius: var(--radius-lg); background: var(--ink); color: #e2dfd9; padding: 22px 24px; overflow-x: auto; }
+  .shell pre { margin: 0; font-family: var(--mono); font-size: 13.5px; line-height: 2; }
+  .shell .dim { color: #8a8580; }
+  .shell .hl { color: var(--accent); }
+  .card { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--white); overflow: hidden; }
+  .card .row { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 24px; padding: 14px 20px; border-bottom: 1px solid var(--line-soft); font-size: 13px; }
+  .card .row:last-child { border-bottom: 0; }
+  .card .row.head { background: var(--line-soft); font-size: 11px; font-weight: 500; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; }
+  .card .row span:nth-child(2) { color: var(--ink-2); }
+  .params .row { grid-template-columns: 140px 250px minmax(0, 1fr); }
+  .verb { font-size: 11px; font-weight: 500; color: var(--white); background: var(--ink); padding: 3px 8px; border-radius: 4px; }
+  @media (max-width: 860px) { .docs { flex-direction: column; gap: 32px; } .docs aside { position: static; width: 100%; flex-direction: row; flex-wrap: wrap; gap: 24px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/"><span class="eyebrow">png</span><span>quran.ws</span></a>
+    <nav>
+      <a href="/">Generator</a>
+      <a href="/api/" aria-current="page">API</a>
+      <a href="/canva/">Canva app</a>
+      <a href="/about/">About the mushaf</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap docs">
+  <aside>
+    <div>
+      <p class="label">Start</p>
+      <a href="#quick">Quick start</a>
+      <a href="#path">Path</a>
+      <a href="#params">Parameters</a>
+    </div>
+    <div>
+      <p class="label">More</p>
+      <a href="#metadata">Metadata</a>
+      <a href="#errors">Errors</a>
+      <a href="#limits">Limits</a>
+    </div>
+  </aside>
+
+  <div class="body">
+    <p class="eyebrow">API</p>
+    <h1 class="display">One URL is the whole API</h1>
+    <p style="max-width:620px;color:var(--ink-2);line-height:1.75;margin-top:18px">
+      Every image is a GET request you can paste into a browser, an <code class="mono">&lt;img&gt;</code> tag,
+      or a build script. No key, no signup. Responses are immutable and cached forever, so you can
+      hotlink them.
+    </p>
+
+    <h2 id="quick">Quick start</h2>
+    <div class="shell">
+      <pre><span class="dim">$</span> curl -O <span class="hl">"https://png.quran.ws/api/v1/image/2/255.png?layout=fit&amp;aspect=post&amp;width=3000"</span></pre>
+    </div>
+    <p style="margin-top:12px;font-size:12px;color:var(--ink-3)">
+      surah 2 · ayah 255 · 4:5 portrait · 3000 px wide · transparent
+    </p>
+
+    <h2 id="path">Path</h2>
+    <div class="card">
+      <div class="row" style="grid-template-columns:auto;display:flex;align-items:center;gap:12px">
+        <span class="verb">GET</span>
+        <span class="mono" style="font-size:13.5px">/api/v1/image/<span style="color:var(--accent)">{surah}</span>/<span style="color:var(--accent)">{range}</span>.<span style="color:var(--accent)">{format}</span></span>
+      </div>
+      <div class="row"><span class="mono">/2/255.png</span><span>one ayah</span></div>
+      <div class="row"><span class="mono">/18/1-10.svg</span><span>a range, as vectors</span></div>
+      <div class="row"><span class="mono">/112/1-.pdf</span><span>to the end of the surah, print-ready</span></div>
+      <div class="row"><span class="mono">?surah=2&amp;from=255&amp;to=255</span><span>the same thing as a query string, on <span class="mono">/api/v1/image</span></span></div>
+    </div>
+
+    <h2 id="params">Parameters</h2>
+    <div class="card params">
+      <div class="row head"><span>Name</span><span>Values</span><span>Default</span></div>
+      <div class="row"><span class="mono">layout</span><span>mushaf · fit</span><span style="color:var(--ink-3)">mushaf</span></div>
+      <div class="row"><span class="mono">aspect</span><span>square · post · story · wide · banner · <span class="mono">4:5</span></span><span style="color:var(--ink-3)">square</span></div>
+      <div class="row"><span class="mono">width</span><span>64 – 8000 px (png only)</span><span style="color:var(--ink-3)">2000</span></div>
+      <div class="row"><span class="mono">color</span><span>any hex</span><span style="color:var(--ink-3)">#231f20</span></div>
+      <div class="row"><span class="mono">background</span><span>any hex</span><span style="color:var(--ink-3)">transparent</span></div>
+      <div class="row"><span class="mono">align</span><span>center · right · left</span><span style="color:var(--ink-3)">center</span></div>
+      <div class="row"><span class="mono">padding</span><span>0 – 400</span><span style="color:var(--ink-3)">24</span></div>
+      <div class="row"><span class="mono">lineSpacing</span><span>0.6 – 3</span><span style="color:var(--ink-3)">1</span></div>
+      <div class="row"><span class="mono">wordSpacing</span><span>0.3 – 4 (fit layout)</span><span style="color:var(--ink-3)">1</span></div>
+    </div>
+    <p style="margin-top:14px;font-size:13px;color:var(--ink-2)">
+      <strong style="font-weight:500">layout=mushaf</strong> keeps the printed line breaks and the printed
+      spacing inside each line. <strong style="font-weight:500">layout=fit</strong> repacks the same word
+      artwork into lines that fill the requested <span class="mono">aspect</span>. Neither ever scales or
+      stretches a letter.
+    </p>
+
+    <h2 id="metadata">Metadata</h2>
+    <div class="card">
+      <div class="row"><span class="mono">GET /api/v1/surahs</span><span>all 114, with ayah counts, names and page spans</span></div>
+      <div class="row"><span class="mono">GET /api/v1/surahs/18</span><span>one surah</span></div>
+      <div class="row"><span class="mono">GET /api/v1/options</span><span>the machine-readable list of everything above</span></div>
+    </div>
+
+    <h2 id="errors">Errors say what to fix</h2>
+    <div class="card" style="padding:20px 24px">
+      <pre class="mono" style="margin:0;font-size:13px;line-height:1.9;color:var(--ink-2);white-space:pre-wrap">GET /api/v1/image/2/999.png   <span style="color:var(--ink-3)">→ 400</span>
+{ <span style="color:var(--accent)">"error"</span>: <span style="color:var(--ink)">"surah 2 has 286 ayahs, got 999-999"</span> }</pre>
+    </div>
+
+    <h2 id="limits">Limits</h2>
+    <p style="color:var(--ink-2);line-height:1.8">
+      120 requests per minute per IP. Rendered images are cached and served with a permanent
+      <span class="mono">ETag</span>, so a page that hotlinks the same ayah costs one render, ever.
+      Need more than that? The whole service is open source — run your own copy.
+    </p>
+
+    <p style="margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)">
+      <a href="https://github.com/quran-ws/quran-png">github.com/quran-ws/quran-png</a>
+    </p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>quran.ws · free tools for Quranic text</span>
+    <span><a href="/">Generator</a> · <a href="/about/">Licence &amp; provenance</a></span>
+  </div>
+</footer>
+</body>
+</html>

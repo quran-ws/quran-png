@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quran App for Canva — Insert Ayahs Without Leaving the Editor | png.quran.ws</title>
+<meta name="description" content="quran-canva puts the Madani mushaf inside the Canva editor. Pick a surah and ayah range and add it to your design as a transparent image, with no downloading and re-uploading.">
+<link rel="canonical" href="https://png.quran.ws/canva/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&display=swap">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/"><span class="eyebrow">png</span><span>quran.ws</span></a>
+    <nav>
+      <a href="/">Generator</a>
+      <a href="/api/">API</a>
+      <a href="/canva/" aria-current="page">Canva app</a>
+      <a href="/about/">About the mushaf</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="prose">
+    <p class="eyebrow">quran-canva</p>
+    <h1 class="display" style="font-size:clamp(30px,4vw,44px);line-height:1.1;letter-spacing:-0.02em;margin:14px 0 0">
+      The mushaf, inside the Canva editor
+    </h1>
+    <p style="margin-top:24px">
+      The website works, but the loop is clumsy: leave your design, pick an ayah, download a file,
+      go back, upload it. <strong style="font-weight:500">quran-canva</strong> is the same picker
+      running in Canva's side panel. Choose a surah and a range, press <em>Add to design</em>, and the
+      ayah lands on the page as a transparent image you can move, scale and recolour like anything else.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">Status</h2>
+    <p>
+      The app is built and pending Canva's marketplace review. Until it is listed, the
+      <a href="/">web generator</a> does everything the app does — the app only removes the
+      download-and-upload step.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">What it can and cannot do</h2>
+    <p>
+      It inserts a <strong style="font-weight:500">transparent PNG at 3000 px</strong>, which is enough
+      for any print size a Canva design reaches. Canva resizes it like any image, and because the
+      background is transparent it sits on any colour. What it does not do is make the verse editable
+      text — that is the point. Editable Arabic text is precisely what breaks the mushaf's ligatures
+      and diacritics; the image is the guarantee that the ayah is rendered as the Complex prints it.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">It reads nothing</h2>
+    <p>
+      The app asks for no permissions and no account. It calls one public, unauthenticated endpoint for
+      the surah list, and hands Canva an image URL. It cannot read your designs, and there is nothing
+      for it to store about you.
+    </p>
+
+    <p style="margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)">
+      Source: <a href="https://github.com/quran-ws/quran-png/tree/main/apps/quran-canva">apps/quran-canva</a>.
+      Run it yourself against the Canva starter kit — the README has the four commands.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>quran.ws · free tools for Quranic text</span>
+    <span><a href="/">Generator</a> · <a href="/api/">API</a> · <a href="/about/">Licence</a></span>
+  </div>
+</footer>
+</body>
+</html>

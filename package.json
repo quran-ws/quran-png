@@ -1,0 +1,30 @@
+{
+  "name": "quran-png",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Print-quality Quran images for Canva and every other design tool.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "apps/api",
+    "apps/canva"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "data": "node scripts/fetch-data.mjs && node scripts/build-store.mjs",
+    "dev": "node --watch apps/api/server.mjs",
+    "start": "node apps/api/server.mjs",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.1",
+    "@resvg/resvg-js": "^2.6.2",
+    "hono": "^4.13.7",
+    "pdfkit": "^0.20.2",
+    "saxes": "^6.0.0",
+    "svg-to-pdfkit": "^0.1.8"
+  }
+}

@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&display=swap">
+  <style>
+    body { margin: 0; font-family: "Inter", ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #57534e; text-decoration: none; }
+    a:hover { color: #c4956a; }
+    .display { font-family: "Cormorant Garamond", Georgia, Cambria, serif; font-weight: 500; font-feature-settings: "calt" 1, "liga" 1, "dlig" 1; }
+    .eyebrow { font-size: 11px; font-weight: 500; color: #c4956a; letter-spacing: 0.25em; text-transform: uppercase; }
+    .checker {
+      background-color: #ffffff;
+      background-image:
+        linear-gradient(45deg, #f1efeb 25%, transparent 25%, transparent 75%, #f1efeb 75%),
+        linear-gradient(45deg, #f1efeb 25%, transparent 25%, transparent 75%, #f1efeb 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 8px 8px;
+    }
+  </style>
+</helmet>
+
+<div style="width: 1440px; min-height: 1080px; background: #faf9f6; color: #1c1917; display: flex; flex-direction: column;">
+
+  <!-- header, matching fonts.quran.ws -->
+  <div style="border-bottom: 1px solid #1c19170d;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: baseline; gap: 8px;">
+        <span class="eyebrow">png</span>
+        <span style="font-size: 13px; color: #a8a29e;">quran.ws</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px; font-size: 13px;">
+        <a href="#" style="padding: 5px 10px; border-radius: 6px; color: #1c1917;">Generator</a>
+        <a href="#" style="padding: 5px 10px; border-radius: 6px;">API</a>
+        <a href="#" style="padding: 5px 10px; border-radius: 6px;">Canva app</a>
+        <a href="#" style="padding: 5px 10px; border-radius: 6px;">About the mushaf</a>
+        <div style="width: 1px; height: 16px; background: #1c19171a; margin: 0 8px;"></div>
+        <div style="display: flex; align-items: center; gap: 2px; font-size: 12px;">
+          <a href="#" style="padding: 4px 8px; border-radius: 6px; color: #1c1917; background: #1c19170d;">EN</a>
+          <a href="#" style="padding: 4px 8px; border-radius: 6px;">العربية</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- hero -->
+  <div style="max-width: 760px; margin: 0 auto; padding: 72px 24px 44px; text-align: center;">
+    <p class="eyebrow" style="margin: 0 0 16px;">png.quran.ws</p>
+    <h1 class="display" style="margin: 0; font-size: 52px; line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance;">
+      Quran text you can drop straight into Canva
+    </h1>
+    <p style="margin: 14px 0 0; font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic; font-size: 19px; color: #a8a29e;">
+      Real mushaf calligraphy — not a font, not a screenshot
+    </p>
+    <p style="margin: 28px auto 0; max-width: 620px; font-size: 15px; line-height: 1.75; color: #57534e; text-wrap: pretty;">
+      Choose a surah and an ayah range. Get a transparent PNG, a vector SVG, or a print-ready PDF
+      of the King Fahd Complex Madani mushaf — the exact artwork, at any size. Free, no account,
+      no watermark.
+    </p>
+  </div>
+
+  <!-- the tool -->
+  <div style="max-width: 1200px; margin: 0 auto 72px; padding: 0 24px; width: 100%; box-sizing: border-box;">
+    <div style="border: 1px solid #1c19171a; border-radius: 8px; background: #ffffff; overflow: hidden;">
+
+      <!-- pickers -->
+      <div style="display: flex; align-items: flex-end; gap: 16px; padding: 20px 24px; border-bottom: 1px solid #1c19170d;">
+        <div style="flex-grow: 1; max-width: 380px;">
+          <label style="display: block; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 7px;">Surah</label>
+          <div style="display: flex; align-items: center; justify-content: space-between; height: 44px; padding: 0 14px; border: 1px solid #1c19171a; border-radius: 6px; font-size: 15px;">
+            <span style="display: flex; align-items: baseline; gap: 10px;">
+              <span style="color: #a8a29e; font-size: 13px; font-variant-numeric: tabular-nums;">2</span>
+              <span>Al-Baqarah</span>
+              <span style="font-family: 'Cormorant Garamond', serif; font-size: 18px; color: #57534e;">البقرة</span>
+            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a8a29e" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+
+        <div style="width: 108px;">
+          <label style="display: block; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 7px;">From ayah</label>
+          <div style="display: flex; align-items: center; height: 44px; padding: 0 14px; border: 1px solid #1c19171a; border-radius: 6px; font-size: 15px; font-variant-numeric: tabular-nums;">255</div>
+        </div>
+
+        <div style="width: 108px;">
+          <label style="display: block; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 7px;">To</label>
+          <div style="display: flex; align-items: center; height: 44px; padding: 0 14px; border: 1px solid #1c19171a; border-radius: 6px; font-size: 15px; font-variant-numeric: tabular-nums;">255</div>
+        </div>
+
+        <div style="flex-grow: 1;"></div>
+
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #a8a29e;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c4956a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span>Ayat al-Kursi · page 42 · 50 words</span>
+        </div>
+      </div>
+
+      <!-- preview + options -->
+      <div style="display: flex; align-items: stretch;">
+
+        <div class="checker" style="flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 56px; min-height: 520px; position: relative;">
+          <img src="preview-kursi.png" alt="Ayat al-Kursi in the Madani mushaf" style="width: 470px; height: auto; display: block;">
+          <div style="position: absolute; left: 20px; bottom: 16px; display: flex; gap: 14px; font-size: 11px; color: #a8a29e; font-variant-numeric: tabular-nums;">
+            <span>2400 × 2400 px</span>
+            <span>transparent</span>
+          </div>
+        </div>
+
+        <div style="width: 340px; flex-shrink: 0; border-left: 1px solid #1c19170d; padding: 24px; display: flex; flex-direction: column; gap: 26px; box-sizing: border-box;">
+
+          <div>
+            <p style="margin: 0 0 10px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase;">Layout</p>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+              <div style="border: 1px solid #1c1917; border-radius: 6px; padding: 11px 12px;">
+                <p style="margin: 0; font-size: 13px; font-weight: 500;">Mushaf lines</p>
+                <p style="margin: 3px 0 0; font-size: 11px; line-height: 1.4; color: #a8a29e;">Breaks where the page breaks</p>
+              </div>
+              <div style="border: 1px solid #1c19171a; border-radius: 6px; padding: 11px 12px;">
+                <p style="margin: 0; font-size: 13px; font-weight: 500; color: #57534e;">Fit to width</p>
+                <p style="margin: 3px 0 0; font-size: 11px; line-height: 1.4; color: #a8a29e;">Repacked to a shape</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p style="margin: 0 0 10px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase;">Shape</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <span style="font-size: 12px; padding: 6px 11px; border-radius: 999px; border: 1px solid #1c1917; color: #1c1917;">Square</span>
+              <span style="font-size: 12px; padding: 6px 11px; border-radius: 999px; border: 1px solid #1c19171a; color: #57534e;">Post 4:5</span>
+              <span style="font-size: 12px; padding: 6px 11px; border-radius: 999px; border: 1px solid #1c19171a; color: #57534e;">Story 9:16</span>
+              <span style="font-size: 12px; padding: 6px 11px; border-radius: 999px; border: 1px solid #1c19171a; color: #57534e;">Wide 16:9</span>
+              <span style="font-size: 12px; padding: 6px 11px; border-radius: 999px; border: 1px solid #1c19171a; color: #57534e;">Banner 3:1</span>
+            </div>
+          </div>
+
+          <div>
+            <p style="margin: 0 0 10px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase;">Ink</p>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 26px; height: 26px; border-radius: 999px; background: #231f20; box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px #1c1917;"></span>
+              <span style="width: 26px; height: 26px; border-radius: 999px; background: #57534e; box-shadow: 0 0 0 1px #1c19171a;"></span>
+              <span style="width: 26px; height: 26px; border-radius: 999px; background: #c4956a; box-shadow: 0 0 0 1px #1c19171a;"></span>
+              <span style="width: 26px; height: 26px; border-radius: 999px; background: #1e3a34; box-shadow: 0 0 0 1px #1c19171a;"></span>
+              <span style="width: 26px; height: 26px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #1c19171a;"></span>
+              <div style="flex-grow: 1;"></div>
+              <span style="font-size: 12px; color: #a8a29e; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;">#231F20</span>
+            </div>
+          </div>
+
+          <div>
+            <p style="margin: 0 0 10px; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase;">Background</p>
+            <div style="display: flex; gap: 8px;">
+              <span style="flex-grow: 1; text-align: center; font-size: 12px; padding: 8px 0; border-radius: 6px; border: 1px solid #1c1917;">Transparent</span>
+              <span style="flex-grow: 1; text-align: center; font-size: 12px; padding: 8px 0; border-radius: 6px; border: 1px solid #1c19171a; color: #57534e;">Solid colour</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;">
+                <span>Padding</span><span style="font-variant-numeric: tabular-nums; letter-spacing: 0;">24</span>
+              </div>
+              <div style="height: 2px; background: #1c19171a; border-radius: 999px; position: relative;">
+                <div style="position: absolute; left: 0; top: 0; height: 2px; width: 26%; background: #1c1917; border-radius: 999px;"></div>
+                <div style="position: absolute; left: 26%; top: -5px; width: 12px; height: 12px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #1c1917;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 500; color: #a8a29e; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;">
+                <span>Size</span><span style="font-variant-numeric: tabular-nums; letter-spacing: 0;">2400 px</span>
+              </div>
+              <div style="height: 2px; background: #1c19171a; border-radius: 999px; position: relative;">
+                <div style="position: absolute; left: 0; top: 0; height: 2px; width: 62%; background: #1c1917; border-radius: 999px;"></div>
+                <div style="position: absolute; left: 62%; top: -5px; width: 12px; height: 12px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 1px #1c1917;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="flex-grow: 1;"></div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 9px; height: 48px; border-radius: 6px; background: #1c1917; color: #faf9f6; font-size: 15px; font-weight: 500;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13M7 12l5 5 5-5M5 21h14"/></svg>
+              Download PNG
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <div style="flex-grow: 1; text-align: center; line-height: 44px; height: 44px; border-radius: 6px; border: 1px solid #1c19171a; font-size: 14px; color: #1c1917;">SVG</div>
+              <div style="flex-grow: 1; text-align: center; line-height: 44px; height: 44px; border-radius: 6px; border: 1px solid #1c19171a; font-size: 14px; color: #1c1917;">PDF</div>
+              <div style="flex-grow: 1; text-align: center; line-height: 44px; height: 44px; border-radius: 6px; border: 1px solid #1c19171a; font-size: 14px; color: #1c1917;">Copy link</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- provenance, doing the trust job a testimonial would -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding: 0 4px; font-size: 12px; color: #a8a29e;">
+      <span>Artwork: King Fahd Glorious Qur'an Printing Complex, Madani mushaf V4 (1441H), Ḥafṣ ʿan ʿĀṣim — used under the Complex's free digital licence.</span>
+      <span>604 pages · 6,236 ayahs · 77,432 words</span>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+</body>
+</html>
