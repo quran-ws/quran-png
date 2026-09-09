@@ -35,19 +35,32 @@ GITHUB_PAT=ghp_xxx sudo -E bash \
   /srv/infra/infra/platform/gha-runner/install.sh quran-ws/quran-png
 ```
 
-**3. Two repo secrets on `quran-ws/quran-png`:**
+**3. One repo secret on `quran-ws/quran-png`:**
 
 | Secret | What it is |
 |---|---|
-| `INFRA_REPO_PAT` | fine-grained PAT, `Contents: write` + `Pull requests: write` on `quran-ws/quran.ws-server` |
-| `BUNDLE_TOKEN` | read access to the private `AbdullahObaid/quran-svg-pipeline` release the artwork comes from |
+| `INFRA_REPO_PAT` | fine-grained PAT, `Contents: write` + `Pull requests: write` on `AbdullahObaid/quran.ws-server` |
 
-`BUNDLE_TOKEN` is the one that is easy to miss. The build fetches a 108 MB
-release asset from a **private** repo; without a token the Docker build fails
-at `fetch-data.mjs` with a 404, and so does `npm run data` in the test job.
+Set it without the value passing through anything else:
 
-**4. DNS.** `png.quran.ws` already resolves through Cloudflare. It needs a
-CNAME to the tunnel, like the other sites.
+```bash
+gh secret set INFRA_REPO_PAT -R quran-ws/quran-png     # prompts for the value
+```
+
+`AbdullahObaid/pdf.quran.ws` already carries a secret of the same name for the
+same purpose; the same token works if it still has the scopes.
+
+There is deliberately no second secret for the artwork. The bundle is mirrored
+onto this repo's own release (`artwork-v1.0.0`), so the build fetches it with
+the workflow's automatic `GITHUB_TOKEN`. `scripts/fetch-data.mjs` pins its
+SHA-256, so the mirror is a frozen artifact — re-mirror only if that pin
+changes, and point `BUNDLE_REPO` / `BUNDLE_TAG` elsewhere if you ever need to.
+
+**4. DNS — already done.** The tunnel has a wildcard route: any `*.quran.ws`
+host reaches Traefik, which answers 404 until a router exists for it. You can
+confirm the same 404 comes back for a hostname that certainly has no site.
+`png.quran.ws` starts serving the moment the site is deployed; no DNS record
+needs adding.
 
 ## Building the image by hand
 

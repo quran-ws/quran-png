@@ -10,8 +10,12 @@ import { promisify } from 'node:util'
 
 const run = promisify(execFile)
 
-const REPO = 'AbdullahObaid/quran-svg-pipeline'
-const TAG = 'v1.0.0'
+// Mirrored onto this repo's own release so CI can fetch it with the workflow's
+// automatic GITHUB_TOKEN — no cross-repo secret to create, leak or forget. The
+// upstream is AbdullahObaid/quran-svg-pipeline v1.0.0; SHA256 below pins it, so
+// re-mirror only when that pin changes.
+const REPO = process.env.BUNDLE_REPO || 'quran-ws/quran-png'
+const TAG = process.env.BUNDLE_TAG || 'artwork-v1.0.0'
 const ASSET = 'quran-svg-hafs-kfgqpc.tar.gz'
 const SHA256 = '2bff7bcc1d84b61ee9baf2c356ea554b0a1dd317d6a8145406b5cee998914d17'
 

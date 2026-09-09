@@ -6,9 +6,7 @@
 #       GITHUB_PAT=ghp_xxx sudo -E bash \
 #         /srv/infra/infra/platform/gha-runner/install.sh quran-ws/quran-png
 #   - repo secret INFRA_REPO_PAT — fine-grained PAT with Contents: write and
-#     Pull requests: write on quran-ws/quran.ws-server
-#   - repo secret BUNDLE_TOKEN — token with read access to the private
-#     AbdullahObaid/quran-svg-pipeline release the artwork comes from
+#     Pull requests: write on AbdullahObaid/quran.ws-server
 #   - infra/sites/png/site.yaml must already exist (added by a reviewed PR)
 
 name: build-and-deploy
@@ -20,7 +18,7 @@ on:
 
 env:
   SLUG: png
-  INFRA_REPO: quran-ws/quran.ws-server
+  INFRA_REPO: AbdullahObaid/quran.ws-server
   INFRA_BRANCH: main
 
 concurrency:
@@ -46,7 +44,7 @@ jobs:
       # The suite reads the render store, so the data has to exist first.
       - name: build the render store
         env:
-          GH_TOKEN: ${{ secrets.BUNDLE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run data
 
       - run: npm test
@@ -84,7 +82,7 @@ jobs:
             ghcr.io/${{ github.repository }}:latest
           # the artwork bundle lives on a private release
           secrets: |
-            gh_token=${{ secrets.BUNDLE_TOKEN }}
+            gh_token=${{ secrets.GITHUB_TOKEN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
