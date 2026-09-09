@@ -5,8 +5,8 @@
 // is ever scaled or stretched, so the artwork stays pixel-identical to print;
 // the layouts differ only in where the atoms land.
 //
-//   mushaf  keep the printed line breaks and the printed spacing within a line
-//   fit     repack the same atoms into lines of a target width
+//   mushaf  reproduce the plate: every word keeps its printed x and baseline
+//   fit     repack the same atoms into justified lines of a target width
 
 import { loadIndex, loadPage } from './store.mjs'
 import { unionBBox } from './path-bbox.mjs'
@@ -108,21 +108,37 @@ async function collect({ index, surah, from, to }) {
   return { rows, lineHeight }
 }
 
-/** Place atoms on their printed lines, keeping the printed spacing. */
-function layoutMushaf(rows, { lineHeight, lineSpacing, align }) {
-  const step = lineHeight * lineSpacing
-  const width = Math.max(...rows.map((r) => r.box[2] - r.box[0]))
+/**
+ * Reproduce the printed page: every word keeps the x it has on the plate, and
+ * the baseline it sits on.
+ *
+ * Nothing is re-aligned here. Lines on a printed page are justified to one
+ * shared text block, so their horizontal relationship to each other is part of
+ * the artwork — nudging each line to its own centre would quietly invent a
+ * layout the mushaf does not have. At `lineSpacing: 1` on a single page, every
+ * atom is placed with the same offset, so the result is the plate itself,
+ * cropped to the selection.
+ *
+ * The only thing that has to be constructed is a page boundary: two plates have
+ * no shared vertical axis, so the first line of the new page is set one printed
+ * line height below the last line of the old one.
+ */
+function layoutMushaf(rows, { lineHeight, lineSpacing }) {
   const placed = []
+  let baselineOut = rows[0].baseline
+  let previous = null
 
-  rows.forEach((row, i) => {
-    const w = row.box[2] - row.box[0]
-    const offsetX = align === 'right' ? width - w : align === 'left' ? 0 : (width - w) / 2
-    // the row travels as one unit: dx from its own left edge, dy from its baseline
-    const dx = offsetX - row.box[0]
-    const dy = i * step - row.baseline
-    for (const atom of row.atoms) placed.push({ ...atom, matrix: row.matrix, dx, dy })
-  })
+  for (const row of rows) {
+    if (previous) {
+      const printedGap = row.page === previous.page ? row.baseline - previous.baseline : lineHeight
+      baselineOut += printedGap * lineSpacing
+    }
+    const dy = baselineOut - row.baseline
+    for (const atom of row.atoms) placed.push({ ...atom, matrix: row.matrix, dx: 0, dy })
+    previous = row
+  }
 
+  const width = Math.max(...rows.map((r) => r.box[2])) - Math.min(...rows.map((r) => r.box[0]))
   return { placed, width }
 }
 
@@ -243,7 +259,7 @@ export async function compose(options = {}) {
 
   let result
   if (layout === 'mushaf') {
-    result = layoutMushaf(rows, { lineHeight, lineSpacing, align })
+    result = layoutMushaf(rows, { lineHeight, lineSpacing })
   } else {
     // Solve for the line width whose resulting block matches the target aspect.
     // Each trial is cheap, and the packing is monotone in width, so a short

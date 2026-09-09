@@ -98,11 +98,15 @@ app.get('/api/v1/surahs/:n{[0-9]+}', async (c) => {
 
 app.get('/api/v1/options', (c) =>
   c.json({
-    layouts: { mushaf: 'keep the printed mushaf line breaks', fit: 'repack the words to a target shape' },
+    layouts: {
+      mushaf: 'reproduce the printed plate exactly — every word keeps its printed position',
+      fit: 'repack the same words into justified lines filling a target shape',
+    },
     aspects: ASPECTS,
     formats: { png: 'transparent raster', svg: 'vector', pdf: 'vector, print-ready' },
     params: {
       align: ['center', 'right', 'left'],
+      'align (note)': 'fit layout only; the mushaf layout has no alignment to choose',
       justify: 'fit layout: spread each line but the last flush to both edges (default on; justify=0 for ragged)',
       width: 'output pixel width for png, 64..8000',
       color: 'hex ink colour',

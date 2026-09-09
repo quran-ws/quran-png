@@ -29,6 +29,39 @@ test('mushaf layout keeps the printed line count', async () => {
   assert.deepEqual(r.meta.pages, [42])
 })
 
+/** The translate each atom is placed with, as written into the SVG. */
+const offsets = (svg) =>
+  new Set(
+    [...svg.matchAll(/<g transform="translate\(([-\d.]+) ([-\d.]+)\)"><g transform="matrix/g)].map(
+      (m) => `${m[1]},${m[2]}`
+    )
+  )
+
+test('mushaf reproduces the plate: one offset for the whole selection', async () => {
+  // Every word keeps its printed x and baseline, so a single-page range is the
+  // plate itself moved as one piece — one distinct translate, no per-line nudge.
+  const r = await compose({ surah: 2, from: 255, to: 255 })
+  assert.deepEqual([...offsets(r.svg)], ['0,0'])
+})
+
+test('mushaf ignores align — there is nothing to align', async () => {
+  const [c, l, right] = await Promise.all(
+    ['center', 'left', 'right'].map((align) => compose({ surah: 2, from: 255, to: 255, align }))
+  )
+  assert.equal(c.svg, l.svg)
+  assert.equal(c.svg, right.svg)
+})
+
+test('a page boundary is the only constructed measurement', async () => {
+  // 2:4-8 crosses from page 2 to page 3: one offset per plate, and the second
+  // plate lands below the first rather than on top of it.
+  const r = await compose({ surah: 2, from: 4, to: 8 })
+  const seen = [...offsets(r.svg)].map((o) => o.split(',').map(Number))
+  assert.equal(seen.length, 2, 'one offset per page')
+  assert.ok(seen.every(([dx]) => dx === 0), 'no horizontal drift between plates')
+  assert.ok(Math.abs(seen[1][1] - seen[0][1]) > 0, 'the second plate is moved clear of the first')
+})
+
 test('fit layout reaches the requested aspect', async () => {
   for (const [aspect, tolerance] of [[1, 0.25], [1.25, 0.3], [16 / 9, 0.4]]) {
     const r = await compose({ surah: 2, from: 255, to: 255, layout: 'fit', aspect })

@@ -99,15 +99,18 @@
       <div class="row"><span class="mono">width</span><span>64 – 8000 px (png only)</span><span style="color:var(--ink-3)">2000</span></div>
       <div class="row"><span class="mono">color</span><span>any hex</span><span style="color:var(--ink-3)">#231f20</span></div>
       <div class="row"><span class="mono">background</span><span>any hex</span><span style="color:var(--ink-3)">transparent</span></div>
-      <div class="row"><span class="mono">align</span><span>center · right · left</span><span style="color:var(--ink-3)">center</span></div>
+      <div class="row"><span class="mono">align</span><span>center · right · left (fit layout)</span><span style="color:var(--ink-3)">center</span></div>
       <div class="row"><span class="mono">padding</span><span>0 – 400</span><span style="color:var(--ink-3)">24</span></div>
       <div class="row"><span class="mono">lineSpacing</span><span>0.6 – 3</span><span style="color:var(--ink-3)">1</span></div>
       <div class="row"><span class="mono">wordSpacing</span><span>0.3 – 4 (fit layout)</span><span style="color:var(--ink-3)">1</span></div>
       <div class="row"><span class="mono">justify</span><span><span class="mono">0</span> to switch it off (fit layout)</span><span style="color:var(--ink-3)">on</span></div>
     </div>
     <p style="margin-top:14px;font-size:13px;color:var(--ink-2)">
-      <strong style="font-weight:500">layout=mushaf</strong> keeps the printed line breaks and the printed
-      spacing inside each line. <strong style="font-weight:500">layout=fit</strong> repacks the same word
+      <strong style="font-weight:500">layout=mushaf</strong> reproduces the plate: every word keeps the
+      x it has on the printed page and the baseline it sits on, so the image is the mushaf itself, cropped
+      to your selection. There is nothing to align — the printed lines are justified to one shared text
+      block, and that relationship is part of the artwork.
+      <strong style="font-weight:500">layout=fit</strong> repacks the same word
       artwork into lines that fill the requested <span class="mono">aspect</span>, spreading each line but
       the last flush to both edges. Neither ever scales or stretches a letter — justification moves the
       gaps between words, never the words themselves, and a line that would have to stretch more than

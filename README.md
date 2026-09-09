@@ -34,7 +34,14 @@ exactly two honest ways to lay out a range:
 
 | `layout=mushaf` (default) | `layout=fit` |
 |---|---|
-| Keeps the printed line breaks and the printed spacing inside each line. The truest reproduction; line widths come out ragged. | Repacks the same word artwork, at the same size, into lines that fill a target shape — `square`, `post` 4:5, `story` 9:16, `wide` 16:9, `banner` 3:1. |
+| Reproduces the plate. Every word keeps the x it has on the printed page and the baseline it sits on — the image is the mushaf, cropped to your selection. | Repacks the same word artwork, at the same size, into justified lines filling a target shape — `square`, `post` 4:5, `story` 9:16, `wide` 16:9, `banner` 3:1. |
+
+`mushaf` has no alignment to offer, by design: printed lines are justified to
+one shared text block, so their horizontal relationship to each other *is* the
+artwork. Re-centring each line on its own would invent a layout the mushaf does
+not have. On a single page every word is placed with the same offset; the only
+constructed measurement is a page boundary, where the first line of the new
+plate is set one printed line height below the last line of the old one.
 
 `fit` bisects on line width until the block matches the requested aspect, then
 places each word by aligning its printed baseline to the target line's baseline.
@@ -67,7 +74,7 @@ GET /api/v1/image/{surah}/{range}.{png|svg|pdf}
 | `width` | 64 – 8000 px (PNG only) | `2000` |
 | `color` | any hex | `#231f20` |
 | `background` | any hex | transparent |
-| `align` | `center` · `right` · `left` | `center` |
+| `align` | `center` · `right` · `left` (`fit` only) | `center` |
 | `padding` | 0 – 400 | `24` |
 | `lineSpacing` | 0.6 – 3 | `1` |
 | `wordSpacing` | 0.3 – 4 (`fit` only) | `1` |
