@@ -28,6 +28,11 @@ function color(raw, name, fallback) {
   return v.toLowerCase()
 }
 
+function bool(raw, fallback) {
+  if (raw === undefined || raw === '') return fallback
+  return !['0', 'false', 'no', 'off'].includes(String(raw).toLowerCase())
+}
+
 function one(raw, name, allowed, fallback) {
   if (raw === undefined || raw === '') return fallback
   if (!allowed.includes(raw)) throw new ComposeError(`${name} must be one of ${allowed.join(', ')}, got "${raw}"`)
@@ -70,6 +75,7 @@ export function parseOptions(q, base = {}) {
     layout,
     aspect,
     align: one(q.align, 'align', ALIGNMENTS, 'center'),
+    justify: bool(q.justify, true),
     color: color(q.color, 'color', '#231f20'),
     background: q.background ? color(q.background, 'background', null) : null,
     padding: num(q.padding, 'padding', { min: 0, max: 400, fallback: 24 }),
@@ -81,7 +87,7 @@ export function parseOptions(q, base = {}) {
 
 export function cacheKey(o) {
   return [
-    o.surah, o.from, o.to, o.format, o.layout, o.aspect ?? '-', o.align,
+    o.surah, o.from, o.to, o.format, o.layout, o.aspect ?? '-', o.align, o.justify ? 'j' : '-',
     o.color, o.background ?? '-', o.padding, o.lineSpacing, o.wordSpacing, o.width,
   ].join('|')
 }

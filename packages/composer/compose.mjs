@@ -127,7 +127,7 @@ function layoutMushaf(rows, { lineHeight, lineSpacing, align }) {
 }
 
 /** Repack the atoms into lines that fill a target width. */
-function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpacing }) {
+function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpacing, justify }) {
   // one flat stream of atoms in reading order, each carrying its own baseline
   const stream = rows.flatMap((row) =>
     row.atoms.map((atom) => ({ ...atom, matrix: row.matrix, baseline: row.baseline }))
@@ -163,6 +163,27 @@ function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpac
   }
   if (current.length) lines.push({ atoms: current, width: used })
 
+  // Justify every line but the last: the first word sits flush against the
+  // right edge, the last against the left, and the slack is shared equally by
+  // the gaps between them. The printed mushaf justifies by stretching letters
+  // (kashida); we cannot do that without distorting the artwork, so a line
+  // whose gaps would have to blow out past MAX_STRETCH is left ragged instead —
+  // a loose line reads better than a line pulled apart.
+  const MAX_STRETCH = 3
+
+  for (const [i, line] of lines.entries()) {
+    line.gap = space
+    const ink = line.atoms.reduce((sum, a) => sum + (a.box[2] - a.box[0]), 0)
+    const gapCount = line.atoms.length - 1
+    if (!justify || i === lines.length - 1 || gapCount < 1) continue
+
+    const needed = (targetWidth - ink) / gapCount
+    if (needed >= space && needed <= space * MAX_STRETCH) {
+      line.gap = needed
+      line.width = targetWidth
+    }
+  }
+
   const width = Math.max(...lines.map((l) => l.width))
   const step = lineHeight * lineSpacing
   const placed = []
@@ -179,7 +200,7 @@ function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpac
         dx: cursor - w - atom.box[0],
         dy: targetBaseline - atom.baseline,
       })
-      cursor -= w + space
+      cursor -= w + line.gap
     }
   })
 
@@ -211,6 +232,7 @@ export async function compose(options = {}) {
     color = INK,
     background = null,
     aspect = null,
+    justify = true,
   } = options
 
   if (!LAYOUTS.includes(layout)) throw new ComposeError(`layout must be one of ${LAYOUTS.join(', ')}`)
@@ -232,12 +254,12 @@ export async function compose(options = {}) {
     let hi = Math.max(lo, total * 1.3)
     for (let i = 0; i < 24; i++) {
       const mid = (lo + hi) / 2
-      const trial = layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth: mid, wordSpacing })
+      const trial = layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth: mid, wordSpacing, justify })
       const height = (trial.lines - 1) * lineHeight * lineSpacing + lineHeight
       if (height / trial.width > ratio) lo = mid
       else hi = mid
     }
-    result = layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth: hi, wordSpacing })
+    result = layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth: hi, wordSpacing, justify })
   }
 
   // Measure the real ink, so the image is cropped to the artwork and not to a
@@ -274,6 +296,7 @@ export async function compose(options = {}) {
       from: range.from,
       to: range.to,
       layout,
+      justified: layout === 'fit' ? justify : false,
       lines: layout === 'mushaf' ? rows.length : result.lines,
       words: result.placed.filter((a) => a.kind === 'word').length,
       pages: [...new Set(rows.map((r) => r.page))],

@@ -103,6 +103,7 @@ app.get('/api/v1/options', (c) =>
     formats: { png: 'transparent raster', svg: 'vector', pdf: 'vector, print-ready' },
     params: {
       align: ['center', 'right', 'left'],
+      justify: 'fit layout: spread each line but the last flush to both edges (default on; justify=0 for ragged)',
       width: 'output pixel width for png, 64..8000',
       color: 'hex ink colour',
       background: 'hex; omit for transparent',

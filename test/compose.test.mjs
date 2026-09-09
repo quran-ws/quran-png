@@ -95,3 +95,64 @@ test('the index agrees with the artwork', async () => {
   assert.equal(index.counts.ayahs, 6236)
   assert.equal(index.surahs.reduce((n, s) => n + s.ayahs, 0), 6236)
 })
+
+test('fit justifies every line but the last, flush to both edges', async () => {
+  // Measured from pixels rather than from the layout's own numbers: render, then
+  // scan the alpha channel for where ink actually starts and stops on each line.
+  const { Resvg } = await import('@resvg/resvg-js')
+  const bands = async (justify) => {
+    const r = await compose({ surah: 2, from: 255, to: 255, layout: 'fit', aspect: 1, justify })
+    const { width, height, pixels } = new Resvg(r.svg, {
+      fitTo: { mode: 'width', value: 900 },
+      font: { loadSystemFonts: false },
+    }).render()
+    const out = []
+    let cur = null
+    for (let y = 0; y < height; y++) {
+      let min = -1
+      let max = -1
+      for (let x = 0; x < width; x++) {
+        if (pixels[(y * width + x) * 4 + 3] > 24) {
+          if (min < 0) min = x
+          max = x
+        }
+      }
+      if (min < 0) {
+        if (cur) out.push(cur)
+        cur = null
+        continue
+      }
+      if (!cur) cur = { min, max }
+      cur.min = Math.min(cur.min, min)
+      cur.max = Math.max(cur.max, max)
+    }
+    if (cur) out.push(cur)
+    return { width, out }
+  }
+
+  const { width, out } = await bands(true)
+  const full = out.slice(0, -1)
+  assert.ok(full.length >= 2, 'needs at least two full lines to be worth checking')
+  for (const b of full) {
+    assert.equal(b.min, full[0].min, 'every justified line starts at the same edge')
+    assert.equal(b.max, full[0].max, 'every justified line ends at the same edge')
+  }
+  // symmetric margins mean the block really is flush, not just consistently offset
+  assert.ok(Math.abs(full[0].min - (width - 1 - full[0].max)) <= 1)
+
+  const ragged = await bands(false)
+  const spans = new Set(ragged.out.map((b) => b.max - b.min))
+  assert.ok(spans.size > 1, 'justify=false should leave the lines ragged')
+})
+
+test('justification never overlaps or reorders words', async () => {
+  const r = await compose({ surah: 18, from: 1, to: 10, layout: 'fit', aspect: 1.25 })
+  const words = [...r.svg.matchAll(/data-word-key="([^"]+)"/g)].map((m) => m[1])
+  // reading order is preserved exactly as the mushaf has it
+  const ordinals = words.map((k) => k.split(':').map(Number))
+  for (let i = 1; i < ordinals.length; i++) {
+    const [, a1, w1] = ordinals[i - 1]
+    const [, a2, w2] = ordinals[i]
+    assert.ok(a2 > a1 || (a2 === a1 && w2 === w1 + 1), `out of order at ${words[i - 1]} → ${words[i]}`)
+  }
+})

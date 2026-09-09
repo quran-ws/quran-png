@@ -38,8 +38,14 @@ exactly two honest ways to lay out a range:
 
 `fit` bisects on line width until the block matches the requested aspect, then
 places each word by aligning its printed baseline to the target line's baseline.
-Anything that stretched a letter to fill a box would no longer be the mushaf, so
-the composer will not do it.
+Every line but the last is justified: first word flush right, last word flush
+left, slack shared equally by the gaps between them.
+
+The printed mushaf justifies by *stretching letters* (kashida). We cannot do that
+without distorting the artwork, so justification here only moves the gaps — and a
+line that would have to stretch past 3× its natural word spacing is left ragged
+instead, because a loose line reads better than one pulled apart. Anything that
+stretched a letter to fill a box would no longer be the mushaf.
 
 ## The API
 
@@ -65,6 +71,7 @@ GET /api/v1/image/{surah}/{range}.{png|svg|pdf}
 | `padding` | 0 – 400 | `24` |
 | `lineSpacing` | 0.6 – 3 | `1` |
 | `wordSpacing` | 0.3 – 4 (`fit` only) | `1` |
+| `justify` | `0` to switch off (`fit` only) | on |
 
 Also `GET /api/v1/surahs`, `/api/v1/surahs/{n}` and `/api/v1/options`.
 

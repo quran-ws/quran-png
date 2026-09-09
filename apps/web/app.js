@@ -29,6 +29,15 @@ const state = { ...DEFAULTS }
 let surahs = []
 
 const $ = (sel) => document.querySelector(sel)
+
+/** Sliders and colour pickers fire on every pixel of a drag; coalesce them. */
+function debounce(fn, ms = 90) {
+  let t
+  return (...args) => {
+    clearTimeout(t)
+    t = setTimeout(() => fn(...args), ms)
+  }
+}
 const el = (tag, props = {}, kids = []) => {
   const node = Object.assign(document.createElement(tag), props)
   for (const k of [].concat(kids)) node.append(k)
@@ -165,9 +174,10 @@ function buildSwatches() {
     })
   )
   const custom = el('input', { type: 'color', value: state.color, title: 'Custom colour' })
+  const settle = debounce(refresh)
   custom.oninput = () => {
     state.color = custom.value
-    refresh()
+    settle()
   }
   host.append(custom, el('span', { className: 'hex', id: 'hex' }))
 }
@@ -228,19 +238,23 @@ function wire() {
     $('#bg-colour').value = state.background
     refresh()
   }
+  const settle = debounce(refresh)
+
   $('#bg-colour').oninput = (e) => {
     state.background = e.target.value
-    refresh()
+    settle()
   }
 
+  // the readout tracks the thumb immediately; only the render waits
   $('#padding').oninput = (e) => {
     state.padding = Number(e.target.value)
     $('#padding-note').textContent = state.padding
-    refresh()
+    settle()
   }
   $('#width').oninput = (e) => {
     state.width = Number(e.target.value)
-    refresh()
+    $('#width-note').textContent = `${state.width} px`
+    settle()
   }
 
   $('#copy').onclick = async () => {

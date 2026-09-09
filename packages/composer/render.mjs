@@ -12,6 +12,11 @@ export function toPNG(svg, { width }) {
   const resvg = new Resvg(svg, {
     fitTo: { mode: 'width', value: Math.round(width) },
     background: 'rgba(0,0,0,0)',
+    // The artwork is outlines — there is not a single <text> node in it. Left to
+    // its own devices resvg builds a system font database on every instance,
+    // which costs ~1.8 s and cannot affect a single pixel here. Output is
+    // byte-identical with this off, and renders land in ~30 ms.
+    font: { loadSystemFonts: false },
   })
   return Buffer.from(resvg.render().asPng())
 }
