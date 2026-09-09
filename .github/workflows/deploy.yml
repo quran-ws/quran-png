@@ -1,0 +1,172 @@
+# Build the image, push it to GHCR, then open an auto-mergeable image-bump PR
+# in the infra repo. See quran.ws-server/docs/guides/auto-deploy-setup.md.
+#
+# Requires, one time:
+#   - a self-hosted runner registered for THIS repo on quran-ws-01:
+#       GITHUB_PAT=ghp_xxx sudo -E bash \
+#         /srv/infra/infra/platform/gha-runner/install.sh quran-ws/quran-png
+#   - repo secret INFRA_REPO_PAT — fine-grained PAT with Contents: write and
+#     Pull requests: write on quran-ws/quran.ws-server
+#   - repo secret BUNDLE_TOKEN — token with read access to the private
+#     AbdullahObaid/quran-svg-pipeline release the artwork comes from
+#   - infra/sites/png/site.yaml must already exist (added by a reviewed PR)
+
+name: build-and-deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  SLUG: png
+  INFRA_REPO: quran-ws/quran.ws-server
+  INFRA_BRANCH: main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  test:
+    runs-on: [self-hosted, quran-ws-01]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm ci --no-audit --no-fund
+
+      # The suite reads the render store, so the data has to exist first.
+      - name: build the render store
+        env:
+          GH_TOKEN: ${{ secrets.BUNDLE_TOKEN }}
+        run: npm run data
+
+      - run: npm test
+
+  build:
+    needs: test
+    runs-on: [self-hosted, quran-ws-01]
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+      short_sha: ${{ steps.meta.outputs.short_sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: meta
+        run: |
+          short_sha="${GITHUB_SHA::7}"
+          echo "short_sha=$short_sha" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${{ github.repository }}:sha-$short_sha" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image }}
+            ghcr.io/${{ github.repository }}:latest
+          # the artwork bundle lives on a private release
+          secrets: |
+            gh_token=${{ secrets.BUNDLE_TOKEN }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      - name: smoke-test the image before it is allowed near production
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+        run: |
+          set -euo pipefail
+          cid="$(docker run -d -p 18787:8787 "$IMAGE")"
+          trap 'docker logs "$cid" || true; docker rm -f "$cid" >/dev/null 2>&1 || true' EXIT
+
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:18787/healthz >/dev/null 2>&1; then break; fi
+            [ "$i" = 30 ] && { echo "never became healthy"; exit 1; }
+            sleep 2
+          done
+
+          curl -fsS http://localhost:18787/api/v1/surahs   >/dev/null
+          curl -fsS "http://localhost:18787/api/v1/image/2/255.png?width=800" -o /tmp/smoke.png
+          # a real render, not an error page
+          size=$(stat -c%s /tmp/smoke.png)
+          [ "$size" -gt 20000 ] || { echo "render too small: $size bytes"; exit 1; }
+          echo "smoke test passed (${size} bytes)"
+
+  bump:
+    needs: build
+    runs-on: [self-hosted, quran-ws-01]
+    steps:
+      - name: open image-bump PR in the infra repo
+        env:
+          GH_TOKEN: ${{ secrets.INFRA_REPO_PAT }}
+          IMAGE: ${{ needs.build.outputs.image }}
+          SHORT: ${{ needs.build.outputs.short_sha }}
+        run: |
+          set -euo pipefail
+
+          workdir="$(mktemp -d)"
+          trap 'rm -rf "$workdir"' EXIT
+          cd "$workdir"
+
+          git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${INFRA_REPO}.git" infra
+          cd infra
+
+          git config user.name  "site-bot (${SLUG})"
+          git config user.email "bot+${SLUG}@users.noreply.github.com"
+
+          branch="image-bump/${SLUG}/${SHORT}"
+          git checkout -b "$branch"
+
+          python3 - <<PY
+          import pathlib, re
+          p = pathlib.Path("infra/sites/${SLUG}/site.yaml")
+          text = p.read_text()
+          new = re.sub(
+              r'^(\s*image:\s*).*$',
+              lambda m: f"{m.group(1)}${IMAGE}",
+              text, count=1, flags=re.MULTILINE,
+          )
+          if new == text:
+              raise SystemExit(f"failed to rewrite image line in {p}")
+          p.write_text(new)
+          PY
+
+          if git diff --quiet; then
+            echo "no change (image already at this tag); skipping PR"
+            exit 0
+          fi
+
+          git add "infra/sites/${SLUG}/site.yaml"
+          git commit -m "image-bump(${SLUG}): ${SHORT}
+
+          Auto-generated by ${GITHUB_REPOSITORY}@${GITHUB_SHA}."
+          git push -u origin "$branch"
+
+          pr_url="$(gh pr create \
+            --repo  "${INFRA_REPO}" \
+            --base  "${INFRA_BRANCH}" \
+            --head  "$branch" \
+            --title "image-bump(${SLUG}): ${SHORT}" \
+            --body  "Auto-generated from ${GITHUB_REPOSITORY}@\`${GITHUB_SHA}\`. Deploys \`${IMAGE}\`." \
+            --label image-bump)"
+
+          gh pr merge --repo "${INFRA_REPO}" --auto --squash "$pr_url"
+          echo "::notice title=opened image-bump PR::${pr_url}"

@@ -1,5 +1,6 @@
 // Lazy, cached access to the render store produced by scripts/build-store.mjs.
 import { readFile } from 'node:fs/promises'
+import { gunzipSync } from 'node:zlib'
 
 const STORE = new URL('../../.data/store/', import.meta.url)
 const INDEX = new URL('../../data/index.json', import.meta.url)
@@ -22,7 +23,9 @@ export async function loadPage(n) {
     pages.set(n, hit)
     return hit
   }
-  const p = readFile(new URL(`${String(n).padStart(3, '0')}.json`, STORE), 'utf8').then(JSON.parse)
+  const p = readFile(new URL(`${String(n).padStart(3, '0')}.json.gz`, STORE)).then((buf) =>
+    JSON.parse(gunzipSync(buf, { maxOutputLength: 64 * 1024 * 1024 }).toString('utf8'))
+  )
   pages.set(n, p)
   if (pages.size > MAX_CACHED_PAGES) pages.delete(pages.keys().next().value)
   return p

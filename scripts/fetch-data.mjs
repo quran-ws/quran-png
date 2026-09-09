@@ -27,18 +27,52 @@ async function sha256(url) {
   return hash.digest('hex')
 }
 
+/**
+ * The bundle lives on a private release, so CI has no `gh` and no anonymous
+ * access. With a token we go through the API (which serves private assets);
+ * locally, `gh` is the convenience path; without either, the plain URL works
+ * once the release is public.
+ */
 async function download() {
-  // The release is on a private repo today, so prefer `gh` when it is available
-  // and fall back to a plain HTTPS fetch once the repo is public.
+  const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN
+
+  if (token) {
+    const api = `https://api.github.com/repos/${REPO}`
+    const headers = {
+      authorization: `Bearer ${token}`,
+      accept: 'application/vnd.github+json',
+      'user-agent': 'quran-png-fetch-data',
+    }
+
+    const release = await fetch(`${api}/releases/tags/${TAG}`, { headers })
+    if (!release.ok) throw new Error(`cannot read release ${TAG}: ${release.status} ${release.statusText}`)
+    const asset = (await release.json()).assets.find((a) => a.name === ASSET)
+    if (!asset) throw new Error(`release ${TAG} has no asset named ${ASSET}`)
+
+    const res = await fetch(`${api}/releases/assets/${asset.id}`, {
+      headers: { ...headers, accept: 'application/octet-stream' },
+      redirect: 'follow',
+    })
+    if (!res.ok) throw new Error(`asset download failed: ${res.status} ${res.statusText}`)
+    await pipeline(res.body, createWriteStream(TARBALL))
+    return
+  }
+
   try {
     await run('gh', ['release', 'download', TAG, '-R', REPO, '-p', ASSET, '-O', TARBALL.pathname, '--clobber'])
     return
   } catch {
-    // fall through
+    // fall through to the anonymous URL
   }
+
   const url = `https://github.com/${REPO}/releases/download/${TAG}/${ASSET}`
   const res = await fetch(url)
-  if (!res.ok) throw new Error(`download failed: ${res.status} ${url}`)
+  if (!res.ok) {
+    throw new Error(
+      `download failed: ${res.status} ${url}\n` +
+        'The release is private — set GH_TOKEN to a token with read access to it.'
+    )
+  }
   await pipeline(res.body, createWriteStream(TARBALL))
 }
 

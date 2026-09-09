@@ -1,0 +1,114 @@
+{
+  "+emMvo": {
+    "defaultMessage": "Surah",
+    "description": "Label for the dropdown that picks a chapter of the Quran."
+  },
+  "+oLgNC": {
+    "defaultMessage": "Placed as a transparent PNG at {width} px — resize it like any Canva element. Artwork: King Fahd Glorious Quran Printing Complex.",
+    "description": "Footnote explaining what gets inserted and crediting the source of the artwork. The placeholder is a pixel width."
+  },
+  "1U5t9H": {
+    "defaultMessage": "Ink",
+    "description": "Label for the dropdown that picks the colour of the Arabic text."
+  },
+  "1ouuYN": {
+    "defaultMessage": "Post 4:5",
+    "description": "A portrait social media post shape option, four by five."
+  },
+  "57+Y5c": {
+    "defaultMessage": "Preview of the selected verses",
+    "description": "Alt text for the preview thumbnail in the app panel."
+  },
+  "78Vcwg": {
+    "defaultMessage": "Shape",
+    "description": "Label for the dropdown that picks the aspect ratio of the image."
+  },
+  "93wsX/": {
+    "defaultMessage": "Qur'an, surah {surah}, ayah {from} to {to}, as printed in the Madani mushaf",
+    "description": "Alt text describing the inserted image. Placeholders are the surah name and the first and last verse numbers."
+  },
+  "B2dQnw": {
+    "defaultMessage": "Wide 16:9",
+    "description": "A landscape shape option, sixteen by nine."
+  },
+  "CklaPh": {
+    "defaultMessage": "Fit to width",
+    "description": "Layout option: repack the words to fill a chosen image shape."
+  },
+  "FVHIv5": {
+    "defaultMessage": "Story 9:16",
+    "description": "A tall social media story shape option, nine by sixteen."
+  },
+  "HObgr8": {
+    "defaultMessage": "Layout",
+    "description": "Label for the choice between keeping the printed line breaks and repacking the words."
+  },
+  "M0/cAJ": {
+    "defaultMessage": "From ayah",
+    "description": "Label for the number input holding the first verse of the range."
+  },
+  "T+dRtF": {
+    "defaultMessage": "Add to design",
+    "description": "The main button, which inserts the verses into the open design."
+  },
+  "T3C86C": {
+    "defaultMessage": "Madani mushaf · Hafs an Asim",
+    "description": "Subtitle naming the edition of the Quran used: the Madani printing, in the Hafs an Asim reading."
+  },
+  "WH9D1L": {
+    "defaultMessage": "Banner 3:1",
+    "description": "A wide banner shape option, three by one."
+  },
+  "WamdG1": {
+    "defaultMessage": "Mushaf black",
+    "description": "Colour option: the near-black ink the printed mushaf uses."
+  },
+  "bJCizB": {
+    "defaultMessage": "Quran",
+    "description": "The name of the app, shown at the top of its panel."
+  },
+  "fTinb/": {
+    "defaultMessage": "Square 1:1",
+    "description": "A square image shape option."
+  },
+  "lJAwjF": {
+    "defaultMessage": "Add the selected verses to the design",
+    "description": "Accessible label for the preview image, which inserts the verses when pressed."
+  },
+  "lTursY": {
+    "defaultMessage": "Could not reach png.quran.ws. Check your connection and try again.",
+    "description": "Error shown when the app cannot load the list of surahs from the server."
+  },
+  "lz38Xn": {
+    "defaultMessage": "That could not be added. Try again in a moment.",
+    "description": "Error shown when inserting the image into the design failed."
+  },
+  "mhGnu5": {
+    "defaultMessage": "White",
+    "description": "Colour option for the text of the verse, for dark backgrounds."
+  },
+  "sC89zL": {
+    "defaultMessage": "To",
+    "description": "Label for the number input holding the last verse of the range."
+  },
+  "sCqa4e": {
+    "defaultMessage": "Deep green",
+    "description": "Colour option for the text of the verse."
+  },
+  "u7chaJ": {
+    "defaultMessage": "Warm grey",
+    "description": "Colour option for the text of the verse."
+  },
+  "vL+3Po": {
+    "defaultMessage": "Gold",
+    "description": "Colour option for the text of the verse."
+  },
+  "vvKsoc": {
+    "defaultMessage": "Mushaf lines",
+    "description": "Layout option: keep the line breaks of the printed page."
+  },
+  "zqsHBT": {
+    "defaultMessage": "Loading…",
+    "description": "Placeholder in the surah dropdown while the list is still loading."
+  }
+}

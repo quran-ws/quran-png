@@ -10,7 +10,9 @@ import { loadIndex } from '../../packages/composer/store.mjs'
 import { parseOptions, parseRange, cacheKey, ASPECTS } from './params.mjs'
 
 const PORT = Number(process.env.PORT ?? 8787)
-const CACHE_MAX = Number(process.env.CACHE_MAX ?? 500)
+// Bounded by bytes, not entries: a 8000 px PNG is a hundred times the size of
+// a small SVG, so a count-based cap is really a cap on nothing.
+const CACHE_BYTES = Number(process.env.CACHE_BYTES ?? 192 * 1024 * 1024)
 const RATE_PER_MIN = Number(process.env.RATE_PER_MIN ?? 120)
 
 const app = new Hono()
@@ -18,6 +20,8 @@ app.use('/api/*', cors())
 
 // --- a small LRU of finished renders; the same ayah is asked for constantly ---
 const cache = new Map()
+let cachedBytes = 0
+
 function cached(key) {
   const hit = cache.get(key)
   if (!hit) return null
@@ -25,9 +29,16 @@ function cached(key) {
   cache.set(key, hit)
   return hit
 }
+
 function store(key, value) {
   cache.set(key, value)
-  if (cache.size > CACHE_MAX) cache.delete(cache.keys().next().value)
+  cachedBytes += value.body.length
+  // evict oldest until back under budget; never evict what we just stored
+  for (const [k, v] of cache) {
+    if (cachedBytes <= CACHE_BYTES || k === key) break
+    cache.delete(k)
+    cachedBytes -= v.body.length
+  }
   return value
 }
 
@@ -174,7 +185,14 @@ app.get('/api/v1/image', async (c) => {
 
 // --- plumbing -------------------------------------------------------------
 
-app.get('/healthz', (c) => c.json({ ok: true, cached: cache.size }))
+app.get('/healthz', (c) =>
+  c.json({
+    ok: true,
+    render_version: RENDER_VERSION,
+    cache: { entries: cache.size, bytes: cachedBytes, budget: CACHE_BYTES },
+    rss: process.memoryUsage().rss,
+  })
+)
 
 app.onError((err, c) => {
   if (err instanceof ComposeError) return c.json({ error: err.message }, err.status)

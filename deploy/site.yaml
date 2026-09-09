@@ -1,0 +1,36 @@
+# png.quran.ws — Quran ayahs as print-quality transparent PNG / SVG / PDF.
+#
+# COPY THIS to infra/sites/png/site.yaml in quran.ws-server, via a reviewed PR.
+# A Node HTTP service (Hono + resvg), not a static site: it renders on demand
+# and holds a bounded in-memory cache.
+
+type: app
+
+domains:
+  - png.quran.ws
+
+# `:latest` until this repo's CI pushes its first SHA tag; the first
+# image-bump PR from quran-ws/quran-png rewrites this line.
+image: ghcr.io/quran-ws/quran-png:latest
+
+healthcheck:
+  path: /healthz
+  interval: 30s
+  timeout: 5s
+  # The image carries a 102 MB render store, but nothing is read at boot —
+  # pages load lazily — so start-up is just Node coming up.
+  retries: 3
+  start_period: 20s
+
+port: 8787
+
+# The render cache is bounded at 192 MB of image bytes (CACHE_BYTES), and the
+# page LRU holds at most 96 parsed pages. 512 MB leaves real headroom above
+# that without letting a leak take the box down.
+resources:
+  memory: 512M
+
+# Nothing is written at runtime: the store is baked into the image and the
+# caches are in memory.
+storage:
+  enabled: false

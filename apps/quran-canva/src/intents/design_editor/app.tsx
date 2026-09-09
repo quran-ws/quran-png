@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import {
   Alert,
-  Box,
   Button,
+  Column,
+  Columns,
   FormField,
   ImageCard,
   NumberInput,
@@ -13,10 +14,17 @@ import {
   Title,
 } from '@canva/app-ui-kit'
 import { useIntl } from 'react-intl'
+import { useFeatureSupport } from '@canva/app-hooks'
 import { upload } from '@canva/asset'
-import { addElementAtPoint } from '@canva/design'
+import { addElementAtCursor, addElementAtPoint } from '@canva/design'
+import * as styles from 'styles/components.css'
 
-const API = 'https://png.quran.ws/api/v1'
+// Canva's own backend fetches the image URL, so this must be a public HTTPS
+// host — never localhost, and never a redirect. The build substitutes only
+// BACKEND_HOST, so there is no env var to reach for: to develop against a local
+// server, put a tunnel URL here temporarily (see the README).
+const API_HOST = 'https://png.quran.ws'
+const API = `${API_HOST}/api/v1`
 
 // What Canva places is a raster: 3000 px is generous for any print size a
 // Canva design reaches, and small enough to upload quickly.
@@ -33,8 +41,13 @@ type Surah = {
 
 type Layout = 'mushaf' | 'fit'
 
-export function App() {
+export const App = () => {
   const intl = useIntl()
+
+  // where an element can be placed differs by surface; take whichever this one
+  // supports rather than assuming
+  const isSupported = useFeatureSupport()
+  const addElement = [addElementAtPoint, addElementAtCursor].find((fn) => isSupported(fn))
 
   const [surahs, setSurahs] = useState<Surah[]>([])
   const [renderVersion, setRenderVersion] = useState<number | null>(null)
@@ -111,7 +124,8 @@ export function App() {
         aiDisclosure: 'none',
         name: `Quran ${surah}:${from}${to === from ? '' : `-${to}`}`,
       })
-      await addElementAtPoint({
+      if (!addElement) throw new Error('this surface cannot take an element')
+      await addElement({
         type: 'image',
         ref: asset.ref,
         altText: {
@@ -140,9 +154,10 @@ export function App() {
     }
   }
 
-  const invalid = !current || from < 1 || to < from || to > current.ayahs
+  const invalid = !current || !addElement || from < 1 || to < from || to > current.ayahs
 
   return (
+    <div className={styles.scrollContainer}>
     <Rows spacing="2u">
       <Rows spacing="0.5u">
         <Title size="small">
@@ -185,8 +200,8 @@ export function App() {
         )}
       />
 
-      <Box display="flex" flexDirection="row">
-        <Box flexGrow="1" paddingEnd="1u">
+          <Columns spacing="1u">
+        <Column>
           <FormField
             label={intl.formatMessage({
               defaultMessage: 'From ayah',
@@ -206,8 +221,8 @@ export function App() {
               />
             )}
           />
-        </Box>
-        <Box flexGrow="1">
+        </Column>
+        <Column>
           <FormField
             label={intl.formatMessage({
               defaultMessage: 'To',
@@ -223,8 +238,8 @@ export function App() {
               />
             )}
           />
-        </Box>
-      </Box>
+        </Column>
+      </Columns>
 
       {!invalid && (
         <ImageCard
@@ -310,5 +325,6 @@ export function App() {
         )}
       </Text>
     </Rows>
+    </div>
   )
 }

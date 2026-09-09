@@ -2,13 +2,14 @@
 // Turns the 604 page SVGs into a render store the API can serve without ever
 // parsing XML at request time.
 //
-//   .data/store/NNN.json   one file per page: raw SVG snippets + page-space boxes
+//   .data/store/NNN.json.gz  one file per page: raw SVG snippets + page-space boxes
 //   data/index.json        committed: surah metadata + ayah -> pages/lines
 //
 // Every snippet is kept verbatim from the source, so output is byte-for-byte
 // the same artwork as the print mushaf; we only ever wrap it in a transform.
 
 import { mkdir, readFile, writeFile, readdir } from 'node:fs/promises'
+import { gzipSync } from 'node:zlib'
 import { SaxesParser } from 'saxes'
 import { pathBBox, parseTransform, multiply, transformBBox, unionBBox, IDENTITY } from '../packages/composer/path-bbox.mjs'
 
@@ -175,7 +176,12 @@ async function main() {
     totalWords += nWords
     totalMarks += Object.keys(page.marks).length
 
-    await writeFile(new URL(`${String(n).padStart(3, '0')}.json`, STORE), JSON.stringify(page))
+    // gzip: the store is mostly path data and compresses to a quarter of its
+    // size, which is 300 MB off the deploy image for ~1 ms per uncached page
+    await writeFile(
+      new URL(`${String(n).padStart(3, '0')}.json.gz`, STORE),
+      gzipSync(JSON.stringify(page), { level: 9 })
+    )
     if (n % 100 === 0) process.stdout.write(`  ${n}/604\n`)
   }
 
