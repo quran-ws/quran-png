@@ -68,9 +68,10 @@ meaningful rather than restating the string.
 
 ## Submitting it
 
-The app needs no permissions and no authentication — it reads a public,
-unauthenticated API and uploads a public image URL. For review, the two things
-worth stating in the submission are:
+The app needs no authentication, and one scope: `canva:asset:private:write`.
+`upload()` writes into the user's media library, so without it every insert
+fails with `missing_scopes`. It asks for nothing else — it cannot read designs.
+For review, the two things worth stating in the submission are:
 
 - **Content provenance.** The artwork is the King Fahd Glorious Qur'an Printing
   Complex's Madani mushaf, used under the Complex's free digital licence, which

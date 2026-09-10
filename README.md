@@ -98,8 +98,9 @@ data/index.json      committed: surah metadata, ayah → pages/lines
 ```
 
 [`apps/quran-canva`](apps/quran-canva) is the same picker inside Canva's side
-panel, so there is no download-and-re-upload step. It asks for no permissions
-and cannot read your designs.
+panel, so there is no download-and-re-upload step. The one permission it asks
+for is `canva:asset:private:write`, so it can put the image in your media
+library; it cannot read your designs.
 
 ## Licence
 
