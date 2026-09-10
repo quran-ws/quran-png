@@ -134,6 +134,9 @@ app.get('/api/v1/options', (c) =>
       align: ['center', 'right', 'left'],
       'align (note)': 'fit layout only; the mushaf layout has no alignment to choose',
       justify: 'fit layout: spread each line but the last flush to both edges (default on; justify=0 for ragged)',
+      basmalah:
+        'a range starting at ayah 1 opens with the basmalah, as the plate does ' +
+        '(default on; basmalah=0 to omit). At-Tawbah has none, and in Al-Fatihah it is ayah 1',
       v: `pass v=${RENDER_VERSION} to pin this renderer and get a permanently cacheable URL`,
       width: 'output pixel width for png, 64..8000',
       color: 'hex ink colour',

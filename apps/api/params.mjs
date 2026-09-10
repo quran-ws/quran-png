@@ -76,6 +76,7 @@ export function parseOptions(q, base = {}) {
     aspect,
     align: one(q.align, 'align', ALIGNMENTS, 'center'),
     justify: bool(q.justify, true),
+    basmalah: bool(q.basmalah, true),
     color: color(q.color, 'color', '#231f20'),
     background: q.background ? color(q.background, 'background', null) : null,
     padding: num(q.padding, 'padding', { min: 0, max: 400, fallback: 24 }),
@@ -88,6 +89,7 @@ export function parseOptions(q, base = {}) {
 export function cacheKey(o) {
   return [
     o.surah, o.from, o.to, o.format, o.layout, o.aspect ?? '-', o.align, o.justify ? 'j' : '-',
+    o.basmalah ? 'b' : '-',
     o.color, o.background ?? '-', o.padding, o.lineSpacing, o.wordSpacing, o.width,
   ].join('|')
 }

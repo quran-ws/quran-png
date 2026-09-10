@@ -18,7 +18,7 @@ const INK = '#231f20' // the fill the source artwork hard-codes on some paths
  * layout change, a spacing change, a fix. Callers cache images for a year, so
  * without this a correction is invisible to anyone who already has the old one.
  */
-export const RENDER_VERSION = 2
+export const RENDER_VERSION = 3
 
 export const LAYOUTS = ['mushaf', 'fit']
 export const ALIGNMENTS = ['center', 'right', 'left']
@@ -52,7 +52,7 @@ export async function resolveRange({ surah, from, to }) {
  * Collect the atoms for a range, in mushaf reading order, grouped by the
  * printed line they came from.
  */
-async function collect({ index, surah, from, to }) {
+async function collect({ index, surah, from, to }, { basmalah = true } = {}) {
   // the (page, line) runs the range touches, deduplicated and in order
   const runs = []
   for (let a = from; a <= to; a++) {
@@ -109,10 +109,55 @@ async function collect({ index, surah, from, to }) {
 
   if (!rows.length) throw new ComposeError(`no artwork for ${surah.number}:${from}-${to}`, 404)
 
+  // The mushaf prints the basmalah as its own line above ayah 1 of every surah
+  // but At-Tawbah; in Al-Fatihah it is ayah 1 and already in the words above.
+  // `has_basmalah` in the index is exactly that distinction, so a range that
+  // opens a surah opens it the way the plate does.
+  if (basmalah && from === 1 && surah.has_basmalah) {
+    const row = await basmalahRow(index, surah)
+    if (row) rows.unshift(row)
+  }
+
   lineHeights.sort((a, b) => a - b)
   const lineHeight = lineHeights[Math.floor(lineHeights.length / 2)] ?? 26
 
   return { rows, lineHeight }
+}
+
+/**
+ * The basmalah banner that opens `surah`, as a row, or null if the plate has
+ * none. It is one atom drawn exactly like a word: same page matrix, same line
+ * translate, placed by its printed box. Its baseline is the bottom of that box
+ * — banners carry no baseline of their own, and the following line's baseline
+ * sits a printed line height below it, which is the gap the plate shows.
+ */
+async function basmalahRow(index, surah) {
+  const start = index.ayahs[key(surah.number, 1)]?.[0]
+  if (!start) return null
+  const page = await loadPage(start[0])
+
+  const i = page.banners?.findIndex((b) => b.kind === 'basmalah' && b.sid === surah.number)
+  if (i === undefined || i < 0) return null
+  const banner = page.banners[i]
+
+  // the line group the banner sits in carries the translate its box already includes
+  const host = page.lines.find((l) => l.banners?.includes(i))
+
+  const atom = {
+    kind: 'basmalah',
+    box: banner.box,
+    svg: banner.svg,
+    lineTransform: host?.transform ?? null,
+    key: `${surah.number}:basmalah`,
+  }
+  return {
+    page: start[0],
+    line: host?.line ?? 0,
+    baseline: banner.box[3],
+    matrix: page.outerTransform,
+    atoms: [atom],
+    box: banner.box,
+  }
 }
 
 /**
@@ -233,14 +278,21 @@ function breakLines(stream, { targetWidth, space, maxGap }) {
 
 /** Repack the atoms into lines that fill a target width. */
 function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpacing, justify }) {
+  // The basmalah is a line on the plate, not a word in the flow: let it keep
+  // its own line here too, centred, and pack only the ayah words beneath it.
+  // Run through the justifier it would be stretched away from the words it
+  // belongs to, or worse, set flush against them.
+  const opener = rows[0]?.atoms[0]?.kind === 'basmalah' ? rows[0] : null
+  const bodyRows = opener ? rows.slice(1) : rows
+
   // one flat stream of atoms in reading order, each carrying its own baseline
-  const stream = rows.flatMap((row) =>
+  const stream = bodyRows.flatMap((row) =>
     row.atoms.map((atom) => ({ ...atom, matrix: row.matrix, baseline: row.baseline }))
   )
 
   // the printed inter-word gap, measured on the source lines
   const gaps = []
-  for (const row of rows) {
+  for (const row of bodyRows) {
     for (let i = 1; i < row.atoms.length; i++) {
       const g = row.atoms[i - 1].box[0] - row.atoms[i].box[2] // RTL: next word sits to the left
       if (g > 0 && g < 20) gaps.push(g)
@@ -256,22 +308,34 @@ function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpac
   // text. Half a line height is a wide-but-honest word space.
   const maxGap = lineHeight * 0.5
 
-  const lines = justify
+  const body = justify
     ? breakLines(stream, { targetWidth, space, maxGap })
     : breakGreedy(stream, { targetWidth, space })
 
-  for (const [i, line] of lines.entries()) {
+  for (const [i, line] of body.entries()) {
     line.gap = space
     const ink = line.atoms.reduce((sum, a) => sum + (a.box[2] - a.box[0]), 0)
     const gapCount = line.atoms.length - 1
     line.width = ink + gapCount * space
-    if (!justify || i === lines.length - 1 || gapCount < 1) continue
+    if (!justify || i === body.length - 1 || gapCount < 1) continue
 
     const needed = (targetWidth - ink) / gapCount
     if (needed >= space && needed <= maxGap) {
       line.gap = needed
       line.width = targetWidth
     }
+  }
+
+  // the opener sits above the block, centred and never justified
+  const lines = body
+  if (opener) {
+    const atom = { ...opener.atoms[0], matrix: opener.matrix, baseline: opener.baseline }
+    lines.unshift({
+      atoms: [atom],
+      gap: 0,
+      width: atom.box[2] - atom.box[0],
+      center: true,
+    })
   }
 
   const width = Math.max(targetWidth, ...lines.map((l) => l.width))
@@ -283,14 +347,16 @@ function layoutFit(rows, { lineHeight, lineSpacing, align, targetWidth, wordSpac
     // says; everything above it starts at the leading edge, whether or not it
     // reached the full measure. A short line that got centred instead would
     // read as a deliberate break in the paragraph.
-    const follows = !justify || i === lines.length - 1
-    const offsetX = follows
-      ? align === 'right'
-        ? width - line.width
-        : align === 'left'
-          ? 0
-          : (width - line.width) / 2
-      : width - line.width
+    const follows = !justify || line.center || i === lines.length - 1
+    const offsetX = line.center
+      ? (width - line.width) / 2
+      : follows
+        ? align === 'right'
+          ? width - line.width
+          : align === 'left'
+            ? 0
+            : (width - line.width) / 2
+        : width - line.width
     // RTL: fill from the right edge of this line leftwards
     let cursor = offsetX + line.width
     const targetBaseline = i * step
@@ -335,13 +401,14 @@ export async function compose(options = {}) {
     background = null,
     aspect = null,
     justify = true,
+    basmalah = true,
   } = options
 
   if (!LAYOUTS.includes(layout)) throw new ComposeError(`layout must be one of ${LAYOUTS.join(', ')}`)
   if (!ALIGNMENTS.includes(align)) throw new ComposeError(`align must be one of ${ALIGNMENTS.join(', ')}`)
 
   const range = await resolveRange({ surah, from, to })
-  const { rows, lineHeight } = await collect(range)
+  const { rows, lineHeight } = await collect(range, { basmalah })
 
   let result
   if (layout === 'mushaf') {
@@ -408,6 +475,7 @@ export async function compose(options = {}) {
       to: range.to,
       layout,
       justified: layout === 'fit' ? justify : false,
+      basmalah: rows[0]?.atoms[0]?.kind === 'basmalah',
       lines: layout === 'mushaf' ? rows.length : result.lines,
       words: result.placed.filter((a) => a.kind === 'word').length,
       padding,

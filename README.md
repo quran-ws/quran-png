@@ -58,6 +58,7 @@ GET /api/v1/image/{surah}/{range}.{png|svg|pdf}
 | `lineSpacing` | 0.6 – 3 | `1` |
 | `wordSpacing` | 0.3 – 4 (`fit` only) | `1` |
 | `justify` | `0` to switch off (`fit` only) | on |
+| `basmalah` | `0` to omit it from a range starting at ayah 1 | on |
 | `v` | pin the renderer for permanent caching | unpinned |
 
 Plain URLs cache for five minutes and then revalidate, so a layout fix reaches

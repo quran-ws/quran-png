@@ -204,3 +204,53 @@ test('justification never overlaps or reorders words', async () => {
     assert.ok(a2 > a1 || (a2 === a1 && w2 === w1 + 1), `out of order at ${words[i - 1]} → ${words[i]}`)
   }
 })
+
+test('a range that opens a surah opens it with the basmalah', async () => {
+  const r = await compose({ surah: 2, from: 1, to: 3, layout: 'mushaf' })
+  assert.equal(r.meta.basmalah, true)
+  // the plate sets it on its own line above ayah 1
+  assert.equal(r.meta.lines, 4, 'three printed ayah lines plus the basmalah')
+})
+
+test('At-Tawbah opens without a basmalah, because the mushaf prints none', async () => {
+  const r = await compose({ surah: 9, from: 1, to: 2, layout: 'mushaf' })
+  assert.equal(r.meta.basmalah, false)
+})
+
+test('Al-Fatihah is not given a second basmalah', async () => {
+  // there the basmalah is ayah 1, already among the words
+  const r = await compose({ surah: 1, from: 1, to: 3, layout: 'mushaf' })
+  assert.equal(r.meta.basmalah, false)
+})
+
+test('a range starting past ayah 1 gets no basmalah', async () => {
+  const r = await compose({ surah: 2, from: 2, to: 4, layout: 'mushaf' })
+  assert.equal(r.meta.basmalah, false)
+})
+
+test('basmalah=false switches the opener off', async () => {
+  const on = await compose({ surah: 112, from: 1, to: 4, layout: 'mushaf' })
+  const off = await compose({ surah: 112, from: 1, to: 4, layout: 'mushaf', basmalah: false })
+  assert.equal(on.meta.basmalah, true)
+  assert.equal(off.meta.basmalah, false)
+  assert.equal(on.meta.words, off.meta.words, 'the opener is not a word of the surah')
+  assert.ok(on.height > off.height, 'it adds a line')
+})
+
+test('every surah that the index says opens with the basmalah gets one', async () => {
+  const index = await loadIndex()
+  for (const s of index.surahs) {
+    const r = await compose({ surah: s.number, from: 1, to: 1, layout: 'mushaf' })
+    assert.equal(r.meta.basmalah, s.has_basmalah, `surah ${s.number} ${s.name_latin}`)
+  }
+})
+
+test('in fit layout the basmalah keeps its own centred line', async () => {
+  const r = await compose({ surah: 2, from: 1, to: 5, layout: 'fit', aspect: 1 })
+  assert.equal(r.meta.basmalah, true)
+  const [left, right] = r.meta.lineExtents[0]
+  const width = r.width
+  // centred: the margins either side match, and it is not flush to the measure
+  assert.ok(Math.abs(left - (width - right)) < 1.5, 'basmalah line is centred')
+  assert.ok(right - left < width - r.meta.padding, 'basmalah is not justified to the measure')
+})
