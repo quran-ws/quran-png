@@ -21,9 +21,14 @@ env:
   INFRA_REPO: AbdullahObaid/quran.ws-server
   INFRA_BRANCH: main
 
+# Serialise runs, but never cancel one. A full run is test + build + bump,
+# roughly 8-10 minutes; with cancel-in-progress a burst of pushes closer
+# together than that kills each build in turn and nothing reaches GHCR, so
+# "I pushed" quietly fails to mean "it deployed". Queueing instead costs
+# some runner time on the box and deploys every commit, in order.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
