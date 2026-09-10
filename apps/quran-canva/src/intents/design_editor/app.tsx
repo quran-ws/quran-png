@@ -8,6 +8,7 @@ import {
   ImageCard,
   NumberInput,
   Rows,
+  Checkbox,
   SegmentedControl,
   Select,
   Text,
@@ -37,6 +38,7 @@ type Surah = {
   name_ar: string
   name_en: string
   name_latin: string
+  has_basmalah: boolean
 }
 
 type Layout = 'mushaf' | 'fit'
@@ -57,6 +59,7 @@ export const App = () => {
   const [layout, setLayout] = useState<Layout>('mushaf')
   const [aspect, setAspect] = useState('square')
   const [color, setColor] = useState('#231f20')
+  const [basmalah, setBasmalah] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -92,9 +95,14 @@ export const App = () => {
       params.set('aspect', aspect)
     }
     if (color !== '#231f20') params.set('color', color)
+    if (!basmalah) params.set('basmalah', '0')
     if (renderVersion !== null) params.set('v', String(renderVersion))
     return (width: number) => `${API}/image/${surah}/${range}.png?${params}&width=${width}`
-  }, [surah, from, to, layout, aspect, color, renderVersion])
+  }, [surah, from, to, layout, aspect, color, basmalah, renderVersion])
+
+  // the option only means anything where the plate has a basmalah to draw:
+  // At-Tawbah has none, and in Al-Fatihah it is ayah 1 and already in the words
+  const opensSurah = from === 1 && Boolean(current?.has_basmalah)
 
   const aspects = [
     { value: 'square', label: intl.formatMessage({ defaultMessage: 'Square 1:1', description: 'A square image shape option.' }) },
@@ -294,6 +302,26 @@ export const App = () => {
           })}
           value={aspect}
           control={(props) => <Select {...props} options={aspects} onChange={setAspect} stretch />}
+        />
+      )}
+
+      {opensSurah && (
+        <FormField
+          label={intl.formatMessage({
+            defaultMessage: 'Opening',
+            description: 'Label for the option that includes the basmalah above the first verse.',
+          })}
+          control={() => (
+            <Checkbox
+              checked={basmalah}
+              onChange={(_, checked) => setBasmalah(checked)}
+              label={intl.formatMessage({
+                defaultMessage: 'Include the basmalah',
+                description:
+                  'Option to draw the opening line, "In the name of God", above the first verse of a surah, as the printed mushaf does.',
+              })}
+            />
+          )}
         />
       )}
 

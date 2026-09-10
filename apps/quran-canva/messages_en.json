@@ -7,6 +7,10 @@
     "defaultMessage": "Placed as a transparent PNG at {width} px — resize it like any Canva element. Artwork: King Fahd Glorious Quran Printing Complex.",
     "description": "Footnote explaining what gets inserted and crediting the source of the artwork. The placeholder is a pixel width."
   },
+  "0AfvHg": {
+    "defaultMessage": "Include the basmalah",
+    "description": "Option to draw the opening line, \"In the name of God\", above the first verse of a surah, as the printed mushaf does."
+  },
   "1U5t9H": {
     "defaultMessage": "Ink",
     "description": "Label for the dropdown that picks the colour of the Arabic text."
@@ -46,6 +50,10 @@
   "M0/cAJ": {
     "defaultMessage": "From ayah",
     "description": "Label for the number input holding the first verse of the range."
+  },
+  "N+d1Hv": {
+    "defaultMessage": "Opening",
+    "description": "Label for the option that includes the basmalah above the first verse."
   },
   "T+dRtF": {
     "defaultMessage": "Add to design",

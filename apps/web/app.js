@@ -23,6 +23,7 @@ const DEFAULTS = {
   background: '',
   padding: 24,
   width: 2000,
+  basmalah: true,
 }
 
 const state = { ...DEFAULTS }
@@ -68,6 +69,7 @@ function readURL() {
   for (const key of ['padding', 'width']) {
     if (p.get(key)) state[key] = Number(p.get(key))
   }
+  if (p.get('basmalah')) state.basmalah = !['0', 'false'].includes(p.get('basmalah'))
 }
 
 function writeURL() {
@@ -90,6 +92,7 @@ function imageURL(format, { width } = {}) {
   if (state.color !== DEFAULTS.color) p.set('color', state.color)
   if (state.background) p.set('background', state.background)
   if (state.padding !== DEFAULTS.padding) p.set('padding', state.padding)
+  if (!state.basmalah) p.set('basmalah', '0')
   if (format === 'png') p.set('width', width ?? state.width)
   // pin the renderer, so a layout fix shows up here instead of being masked by
   // a year-old copy of the previous one sitting in the browser cache
@@ -206,6 +209,9 @@ function syncControls() {
   $('#to').value = String(state.to)
 
   const surah = surahs[state.surah - 1]
+  // the option only means anything where the plate has a basmalah to draw
+  $('#basmalah-group').hidden = !(state.from === 1 && surah?.has_basmalah)
+  $('#basmalah').checked = state.basmalah
   if (surah) {
     $('#from').max = surah.ayahs
     $('#to').max = surah.ayahs
@@ -216,6 +222,10 @@ function syncControls() {
 }
 
 function wire() {
+  $('#basmalah').onchange = (e) => {
+    state.basmalah = e.target.checked
+    refresh()
+  }
   $('#surah').onchange = (e) => {
     state.surah = Number(e.target.value)
     const surah = surahs[state.surah - 1]
