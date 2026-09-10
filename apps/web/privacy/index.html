@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy | png.quran.ws</title>
+<meta name="description" content="What png.quran.ws and the Quran Mushaf Canva app collect: no accounts, no cookies, no analytics, and no record of the ayahs you render.">
+<link rel="canonical" href="https://png.quran.ws/privacy/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&family=Alan+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/"><span class="eyebrow">png</span><span>quran.ws</span></a>
+    <nav>
+      <a href="/">Generator</a>
+      <a href="/api/">API</a>
+      <a href="/canva/">Canva app</a>
+      <a href="/about/">About the mushaf</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="prose">
+    <p class="eyebrow">Privacy</p>
+    <h1 class="display" style="font-size:clamp(30px,4vw,44px);line-height:1.1;letter-spacing:-0.02em;margin:14px 0 0">
+      What we collect
+    </h1>
+
+    <p style="margin-top:24px">
+      Almost nothing, and none of it identifies you. There are no accounts, no sign-up, no API key
+      and no cookies. This page describes both the website and the <strong style="font-weight:500">Quran
+      Mushaf</strong> Canva app, which share one service.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">No analytics, no cookies</h2>
+    <p>
+      The site loads no analytics, no advertising and no tracking scripts of any kind. It sets no
+      cookies and writes nothing to your browser's storage. Nothing here follows you to another site.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">What the server sees</h2>
+    <p>
+      Rendering an ayah is a plain web request, so the server necessarily receives your network address
+      in order to answer it. That address is used for one purpose — a per-address request limit that
+      stops a script pulling the entire muṣḥaf in a loop — and it is held only in memory. It is never
+      written to a database, never linked to anything else, and disappears when the service restarts.
+    </p>
+    <p>
+      The verses you render are not logged, not stored and not associated with you. We keep no history
+      of what anyone has generated.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">The Canva app</h2>
+    <p>
+      The Canva app runs entirely in the panel Canva gives it. It asks for no permissions, cannot read
+      your designs, and sends us nothing about you or your account. It requests the list of surahs and
+      an image address from this service, then hands that public address to Canva, which fetches the
+      image itself and places it in your design.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">Third parties</h2>
+    <p>
+      Typefaces on this website are served by Google Fonts, so loading a page contacts
+      <code>fonts.googleapis.com</code> and <code>fonts.gstatic.com</code>, which receive your network
+      address as part of that request. The Canva app does not use Google Fonts. Beyond this, no third
+      party receives anything.
+    </p>
+    <p>
+      Images are cached and delivered through Cloudflare, which handles requests on our behalf as our
+      infrastructure provider.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">Children</h2>
+    <p>
+      The service is not directed at children, and because it collects no personal information, it
+      gathers nothing from them either.
+    </p>
+
+    <h2 class="display" style="margin-top:48px">Changes and contact</h2>
+    <p>
+      If this policy changes, the revised version will be published on this page. Questions about
+      privacy can be sent to <a href="mailto:support@quran.ws">support@quran.ws</a>.
+    </p>
+
+    <p style="margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)">
+      Last updated 10 September 2026 · See also <a href="/terms/">the terms</a> and
+      <a href="/about/">the licence covering the artwork</a>.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>quran.ws · Open Quran tools and data</span>
+    <span><a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a> · <a href="/support/">Support</a></span>
+  </div>
+</footer>
+</body>
+</html>

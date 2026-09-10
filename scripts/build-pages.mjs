@@ -209,6 +209,9 @@ async function main() {
     { loc: `${ORIGIN}/canva/`, priority: '0.8' },
     { loc: `${ORIGIN}/about/`, priority: '0.5' },
     { loc: `${ORIGIN}/surah/`, priority: '0.7' },
+    { loc: `${ORIGIN}/support/`, priority: '0.3' },
+    { loc: `${ORIGIN}/terms/`, priority: '0.2' },
+    { loc: `${ORIGIN}/privacy/`, priority: '0.2' },
   ]
 
   await mkdir(new URL('surah/', WEB), { recursive: true })
