@@ -285,7 +285,8 @@ waiver of attribution for use inside a product — see [LICENSE](LICENSE).
 The Qurʾānic text and the muṣḥaf artwork are the **King Fahd Glorious Qurʾān
 Printing Complex's**, used under the Complex's own published free digital
 licence, and are not ours to relicense. The decomposition comes from
-`quran-svg-pipeline` under CC BY 4.0. [NOTICE.md](NOTICE.md) carries all of it,
+[Quran SVG Elements](https://github.com/quran-ws/quran-svg-elements), whose
+licence is still being settled — ask before redistributing that layer. [NOTICE.md](NOTICE.md) carries all of it,
 including the Complex's terms in Arabic and English.
 
 These are images of the Qurʾān. The service renders the text and nothing else:
