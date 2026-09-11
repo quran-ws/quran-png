@@ -1,4 +1,4 @@
-# quran-png
+# Quran PNG
 
 Any range of Qurʾānic ayat as a transparent PNG, an SVG or a print-ready PDF of
 the **actual printed muṣḥaf** — for Canva, Figma, Illustrator, Keynote, or
