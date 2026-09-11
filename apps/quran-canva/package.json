@@ -2,6 +2,7 @@
   "name": "quran-canva",
   "private": true,
   "version": "0.1.0",
+  "license": "MIT",
   "description": "Insert an ayah of the Madani mushaf into a Canva design.",
   "dependencies": {
     "@canva/app-hooks": "^1",
