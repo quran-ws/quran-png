@@ -27,7 +27,7 @@ RUN --mount=type=secret,id=gh_token \
     node scripts/fetch-data.mjs \
  && node scripts/build-store.mjs \
  && node scripts/build-pages.mjs \
- && rm -rf .data/quran-svg-hafs-kfgqpc .data/*.tar.gz
+ && rm -rf .data/quran-svg-elements-hafs-kfgqpc .data/*.tar.gz
 
 ENV NODE_ENV=production
 ENV PORT=8787

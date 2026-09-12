@@ -51,7 +51,7 @@ gh secret set INFRA_REPO_PAT -R quran-ws/quran-png     # prompts for the value
 same purpose; the same token works if it still has the scopes.
 
 There is deliberately no second secret for the artwork. The bundle is mirrored
-onto this repo's own release (`artwork-v1.0.0`), so the build fetches it with
+onto this repo's own release (`artwork-v1.0.1`), so the build fetches it with
 the workflow's automatic `GITHUB_TOKEN`. `scripts/fetch-data.mjs` pins its
 SHA-256, so the mirror is a frozen artifact — re-mirror only if that pin
 changes, and point `BUNDLE_REPO` / `BUNDLE_TAG` elsewhere if you ever need to.

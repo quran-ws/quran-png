@@ -13,7 +13,7 @@ import { gzipSync } from 'node:zlib'
 import { SaxesParser } from 'saxes'
 import { pathBBox, parseTransform, multiply, transformBBox, unionBBox, IDENTITY } from '../packages/composer/path-bbox.mjs'
 
-const BUNDLE = new URL('../.data/quran-svg-hafs-kfgqpc/', import.meta.url)
+const BUNDLE = new URL('../.data/quran-svg-elements-hafs-kfgqpc/', import.meta.url)
 const STORE = new URL('../.data/store/', import.meta.url)
 const OUT_INDEX = new URL('../data/index.json', import.meta.url)
 
