@@ -11,9 +11,26 @@ import { promisify } from 'node:util'
 const run = promisify(execFile)
 
 // Mirrored onto this repo's own release so CI can fetch it with the workflow's
-// automatic GITHUB_TOKEN — no cross-repo secret to create, leak or forget. The
-// upstream is AbdullahObaid/quran-svg-pipeline v1.0.0; SHA256 below pins it, so
+// automatic GITHUB_TOKEN — no cross-repo secret to create, leak or forget.
+//
+// Upstream is quran-ws/quran-svg-elements (formerly AbdullahObaid/quran-svg-pipeline,
+// transferred and renamed September 2026). SHA256 below pins the bytes, so
 // re-mirror only when that pin changes.
+//
+// PINNING THE DIGEST HERE IS THE POINT, and it is worth saying why: the upstream
+// release publishes a `<asset>.sha256` beside the tarball. Verifying against that
+// would check a release against its own published digest — which catches a
+// truncated download and nothing else, because a substituted release moves both
+// values together. The expected digest lives in THIS repository so that changing
+// which bytes we serve is a reviewable diff here.
+//
+// RE-PIN ORDER — do not reorder these steps:
+//   1. quran-svg-elements publishes the corrected bundle (v1.0.1).
+//   2. Mirror that asset onto a new release here, and update TAG and SHA256 below.
+//   3. Merge here and confirm the deploy is green.
+//   4. ONLY THEN may quran-svg-elements delete its v1.0.0 assets.
+// Deleting upstream first breaks this build on a digest mismatch, because the
+// asset this pin names would no longer exist.
 const REPO = process.env.BUNDLE_REPO || 'quran-ws/quran-png'
 const TAG = process.env.BUNDLE_TAG || 'artwork-v1.0.0'
 const ASSET = 'quran-svg-hafs-kfgqpc.tar.gz'
