@@ -43,7 +43,7 @@ Everything about using it lives on the site. This repository is the source.
 | `packages/` | shared code, including the Composer package |
 | `data/` | the page data the renders are cut from |
 | `deploy/` | how it is deployed |
-| `design/` | the design source |
+| `design/` | store listing artwork and preview renders |
 | `test/` | the gates that must stay green |
 
 Issues and pull requests are welcome here. Everything that is not about *changing* this repository is on the site.
