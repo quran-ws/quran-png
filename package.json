@@ -5,6 +5,10 @@
   "version": "0.1.0",
   "description": "Print-quality Quran images for Canva and every other design tool.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quran-ws/quran-png.git"
+  },
   "workspaces": [
     "packages/*",
     "apps/api"
