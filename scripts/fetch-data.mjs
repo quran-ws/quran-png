@@ -32,13 +32,13 @@ const run = promisify(execFile)
 // Deleting upstream first breaks this build on a digest mismatch, because the
 // asset this pin names would no longer exist.
 const REPO = process.env.BUNDLE_REPO || 'quran-ws/quran-png'
-const TAG = process.env.BUNDLE_TAG || 'artwork-v1.0.0'
-const ASSET = 'quran-svg-hafs-kfgqpc.tar.gz'
-const SHA256 = '2bff7bcc1d84b61ee9baf2c356ea554b0a1dd317d6a8145406b5cee998914d17'
+const TAG = process.env.BUNDLE_TAG || 'artwork-v1.0.1'
+const ASSET = 'quran-svg-elements-hafs-kfgqpc.tar.gz'
+const SHA256 = '4e4f983acb58f06c5972e7c92b69d4655caa34a662fe7cc00b29c7ac74d254ec'
 
 const DATA = new URL('../.data/', import.meta.url)
 const TARBALL = new URL(ASSET, DATA)
-const BUNDLE = new URL('quran-svg-hafs-kfgqpc/', DATA)
+const BUNDLE = new URL('quran-svg-elements-hafs-kfgqpc/', DATA)
 
 const exists = async (u) => stat(u).then(() => true, () => false)
 
