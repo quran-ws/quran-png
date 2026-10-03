@@ -2,8 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import {
   Alert,
   Button,
-  Column,
-  Columns,
   FormField,
   ImageCard,
   NumberInput,
@@ -208,48 +206,51 @@ export const App = () => {
         )}
       />
 
-          <Columns spacing="1u">
-        <Column>
-          <FormField
-            label={intl.formatMessage({
-              defaultMessage: 'From ayah',
-              description: 'Label for the number input holding the first verse of the range.',
-            })}
-            value={from}
-            control={(props) => (
-              <NumberInput
-                {...props}
-                min={1}
-                max={current?.ayahs}
-                onChange={(v) => {
-                  const n = Number(v || 1)
-                  setFrom(n)
-                  if (n > to) setTo(n)
-                }}
-              />
-            )}
+      <FormField
+        label={intl.formatMessage({
+          defaultMessage: 'From ayah',
+          description: 'Label for the number input holding the first verse of the range.',
+        })}
+        value={from}
+        control={(props) => (
+          <NumberInput
+            {...props}
+            min={1}
+            max={current?.ayahs}
+            onChange={(v) => {
+              const n = Number(v || 1)
+              setFrom(n)
+              if (n > to) setTo(n)
+            }}
           />
-        </Column>
-        <Column>
-          <FormField
-            label={intl.formatMessage({
-              defaultMessage: 'To',
-              description: 'Label for the number input holding the last verse of the range.',
-            })}
-            value={to}
-            control={(props) => (
-              <NumberInput
-                {...props}
-                min={from}
-                max={current?.ayahs}
-                onChange={(v) => setTo(Math.max(from, Number(v || from)))}
-              />
-            )}
+        )}
+      />
+
+      <FormField
+        label={intl.formatMessage({
+          defaultMessage: 'To ayah',
+          description: 'Label for the number input holding the last verse of the range.',
+        })}
+        value={to}
+        control={(props) => (
+          <NumberInput
+            {...props}
+            min={from}
+            max={current?.ayahs}
+            onChange={(v) => setTo(Math.max(from, Number(v || from)))}
           />
-        </Column>
-      </Columns>
+        )}
+      />
 
       {!invalid && (
+        // the PNG is transparent, so it takes its backdrop from the panel: give
+        // it one that contrasts with the ink, whichever theme Canva is in
+        <div
+          style={{
+            background: color === '#ffffff' ? '#231f20' : '#f4f1e8',
+            borderRadius: 'var(--ui-kit-radius-element-standard)',
+          }}
+        >
         <ImageCard
           ariaLabel={intl.formatMessage({
             defaultMessage: 'Add the selected verses to the design',
@@ -263,6 +264,7 @@ export const App = () => {
           borderRadius="standard"
           onClick={addToDesign}
         />
+        </div>
       )}
 
       <FormField
